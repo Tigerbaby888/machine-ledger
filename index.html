@@ -7,327 +7,323 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0c0c10;
-  --surface: #16161e;
-  --surface2: #1e1e28;
-  --border: #2a2a38;
-  --accent: #f5c842;
-  --green: #4ee88a;
-  --red: #ff5f5f;
-  --blue: #5ab4ff;
-  --text: #eeeef4;
-  --text2: #8080a0;
-  --text3: #44445a;
-  --radius: 14px;
-  --font: 'Noto Sans TC', sans-serif;
-  --mono: 'DM Mono', monospace;
+  --bg: #0c0c10; --surface: #16161e; --surface2: #1e1e28; --border: #2a2a38;
+  --accent: #f5c842; --green: #4ee88a; --red: #ff5f5f; --blue: #5ab4ff; --purple: #b47fff;
+  --text: #eeeef4; --text2: #8080a0; --text3: #44445a;
+  --radius: 14px; --font: 'Noto Sans TC', sans-serif; --mono: 'DM Mono', monospace;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  min-height: 100vh;
-  max-width: 430px;
-  margin: 0 auto;
-  overflow-x: hidden;
-  padding-bottom: 24px;
-}
+body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; max-width: 430px; margin: 0 auto; overflow-x: hidden; padding-bottom: 24px; }
 
-/* Splash */
-#splashScreen {
-  position: fixed; inset: 0;
-  background: var(--bg);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  z-index: 999; padding: 32px; text-align: center;
-}
+#splashScreen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; padding: 32px; text-align: center; }
 .splash-logo { font-size: 64px; margin-bottom: 16px; }
 .splash-title { font-size: 26px; font-weight: 900; color: var(--accent); margin-bottom: 8px; }
 .splash-sub { font-size: 14px; color: var(--text2); margin-bottom: 32px; line-height: 1.6; }
-.splash-status {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: 12px; padding: 16px 20px; font-size: 14px;
-  color: var(--text2); width: 100%; max-width: 340px; line-height: 1.8;
-}
+.splash-status { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px; font-size: 14px; color: var(--text2); width: 100%; max-width: 340px; line-height: 1.8; }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--text3); margin-right: 8px; }
-.dot.ok { background: var(--green); }
-.dot.err { background: var(--red); }
+.dot.ok { background: var(--green); } .dot.err { background: var(--red); }
 .dot.spin { background: var(--accent); animation: pulse 0.8s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-/* Header */
-.header {
-  background: var(--surface); border-bottom: 1px solid var(--border);
-  padding: 16px 20px 12px; position: sticky; top: 0; z-index: 100;
-}
-.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.header h1 { font-size: 20px; font-weight: 900; color: var(--accent); }
-.sync-badge {
-  display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3);
-  background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px;
-}
+#loginScreen { position: fixed; inset: 0; background: var(--bg); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 998; padding: 32px; text-align: center; }
+.login-logo { font-size: 64px; margin-bottom: 16px; }
+.login-title { font-size: 24px; font-weight: 900; color: var(--accent); margin-bottom: 8px; }
+.login-sub { font-size: 14px; color: var(--text2); margin-bottom: 40px; line-height: 1.6; }
+.google-btn { display: flex; align-items: center; justify-content: center; gap: 12px; background: #fff; color: #333; border: none; border-radius: 12px; padding: 15px 28px; font-size: 16px; font-weight: 700; font-family: var(--font); cursor: pointer; width: 100%; max-width: 300px; }
+
+#pendingScreen { position: fixed; inset: 0; background: var(--bg); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 997; padding: 32px; text-align: center; }
+.pending-icon { font-size: 64px; margin-bottom: 16px; }
+.pending-title { font-size: 22px; font-weight: 900; margin-bottom: 12px; }
+.pending-sub { font-size: 14px; color: var(--text2); line-height: 1.7; margin-bottom: 32px; }
+.logout-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 24px; color: var(--text2); font-size: 14px; font-family: var(--font); cursor: pointer; }
+
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 14px 16px 10px; position: sticky; top: 0; z-index: 100; }
+.header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.header h1 { font-size: 18px; font-weight: 900; color: var(--accent); }
+.sync-badge { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 10px; }
 .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text3); }
 .sync-dot.live { background: var(--green); animation: pulse 2s ease-in-out infinite; }
-
-.tab-bar { display: flex; gap: 6px; }
-.tab {
-  flex: 1; background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 8px; padding: 8px 4px; color: var(--text2);
-  font-size: 13px; font-weight: 500; cursor: pointer; text-align: center;
-  transition: all 0.15s; font-family: var(--font);
-}
+.avatar-btn { width: 32px; height: 32px; border-radius: 50%; background: var(--surface2); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 14px; cursor: pointer; overflow: hidden; flex-shrink: 0; }
+.avatar-btn img { width: 100%; height: 100%; object-fit: cover; }
+.tab-bar { display: flex; gap: 5px; }
+.tab { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 8px 2px; color: var(--text2); font-size: 12px; font-weight: 500; cursor: pointer; text-align: center; transition: all 0.15s; font-family: var(--font); }
 .tab.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+.tab.hidden { display: none; }
 
-/* Pages */
-.page { display: none; padding: 16px; }
+.page { display: none; padding: 14px; }
 .page.active { display: block; }
 
-/* Summary */
-.summary-card {
-  background: linear-gradient(135deg, #1c1c28 0%, #141420 100%);
-  border: 1px solid var(--border); border-radius: var(--radius);
-  padding: 22px 20px; margin-bottom: 14px; position: relative; overflow: hidden;
-}
-.summary-card::before {
-  content: ''; position: absolute; top: -30px; right: -30px;
-  width: 120px; height: 120px;
-  background: radial-gradient(circle, rgba(245,200,66,0.08) 0%, transparent 70%);
-  border-radius: 50%;
-}
-.summary-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
-.summary-amount { font-family: var(--mono); font-size: 40px; font-weight: 500; color: var(--green); }
-.summary-amount.neg { color: var(--red); }
-.summary-period { font-size: 12px; color: var(--text3); margin-top: 4px; }
+.year-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.year-nav-title { font-size: 20px; font-weight: 900; }
+.nav-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; color: var(--text2); font-size: 18px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-family: var(--font); }
 
-.mini-row { display: flex; gap: 10px; margin-bottom: 14px; }
-.mini-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 12px; }
-.mini-card .lbl { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
-.mini-card .val { font-family: var(--mono); font-size: 20px; font-weight: 500; }
-.val.g { color: var(--green); } .val.r { color: var(--red); }
+.group-tabs { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; }
+.group-tabs::-webkit-scrollbar { display: none; }
+.group-tab { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 7px 16px; font-size: 13px; color: var(--text2); cursor: pointer; white-space: nowrap; font-family: var(--font); }
 
-.section-title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 10px; }
-.loc-list { display: flex; flex-direction: column; gap: 8px; }
-.loc-card {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 14px 16px;
-  display: flex; align-items: center; gap: 14px;
-}
-.loc-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+.month-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 4px; text-align: center; cursor: pointer; font-size: 13px; color: var(--text2); font-family: var(--font); }
+.month-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
+.month-btn.has-data { border-color: var(--text3); color: var(--text); }
+.month-btn .mnet { font-size: 10px; font-family: var(--mono); margin-top: 2px; }
+.month-btn .mnet.pos { color: var(--green); } .month-btn .mnet.neg { color: var(--red); }
+.month-btn.active .mnet { color: #000; }
+
+.year-summary { background: linear-gradient(135deg, #1c1c28, #141420); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+.year-summary .lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.year-summary .amt { font-family: var(--mono); font-size: 28px; font-weight: 500; }
+.month-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 12px; }
+.month-card .lbl { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 6px; }
+.month-card .amt { font-family: var(--mono); font-size: 36px; font-weight: 500; color: var(--green); }
+.month-card .amt.neg { color: var(--red); }
+.mini-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.mini-card { flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+.mini-card .l { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+.mini-card .v { font-family: var(--mono); font-size: 18px; font-weight: 500; }
+.v.g { color: var(--green); } .v.r { color: var(--red); }
+
+.section-title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 8px; }
+.loc-list { display: flex; flex-direction: column; gap: 6px; }
+.loc-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; display: flex; align-items: center; gap: 12px; }
+.loc-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
 .loc-info { flex: 1; min-width: 0; }
-.loc-name { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
-.loc-sub { font-size: 12px; color: var(--text2); }
-.loc-amount { font-family: var(--mono); font-size: 16px; font-weight: 500; flex-shrink: 0; }
-.loc-amount.p { color: var(--green); } .loc-amount.n { color: var(--red); }
+.loc-name { font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.loc-sub { font-size: 11px; color: var(--text2); }
+.gbadge { font-size: 10px; padding: 2px 7px; border-radius: 10px; background: var(--surface2); color: var(--text3); margin-left: 6px; }
+.loc-amt { font-family: var(--mono); font-size: 15px; font-weight: 500; flex-shrink: 0; }
+.loc-amt.p { color: var(--green); } .loc-amt.n { color: var(--red); }
 
-/* Form */
-.form-group { margin-bottom: 14px; }
-.form-label { font-size: 12px; color: var(--text2); margin-bottom: 6px; display: block; font-weight: 700; letter-spacing: 0.04em; }
-.form-input {
-  width: 100%; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 10px; padding: 13px 14px; color: var(--text);
-  font-size: 16px; font-family: var(--font); outline: none;
-  transition: border-color 0.15s; -webkit-appearance: none;
-}
+.form-group { margin-bottom: 12px; }
+.form-label { font-size: 12px; color: var(--text2); margin-bottom: 5px; display: block; font-weight: 700; letter-spacing: 0.04em; }
+.form-input { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; color: var(--text); font-size: 16px; font-family: var(--font); outline: none; transition: border-color 0.15s; -webkit-appearance: none; }
 .form-input:focus { border-color: var(--accent); }
 .form-input::placeholder { color: var(--text3); }
-select.form-input {
-  appearance: none; -webkit-appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238080a0' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
-  background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
-}
+select.form-input { appearance: none; -webkit-appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%238080a0' d='M6 8L0 0h12z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 select.form-input option { background: #1a1a25; }
-
 .type-btns { display: flex; gap: 8px; }
-.type-btn {
-  flex: 1; padding: 13px; border-radius: 10px; border: 2px solid var(--border);
-  background: var(--surface); color: var(--text2); font-size: 14px; font-weight: 700;
-  cursor: pointer; transition: all 0.15s; font-family: var(--font); text-align: center;
-}
+.type-btn { flex: 1; padding: 12px; border-radius: 10px; border: 2px solid var(--border); background: var(--surface); color: var(--text2); font-size: 14px; font-weight: 700; cursor: pointer; font-family: var(--font); text-align: center; }
 .type-btn.income.active { border-color: var(--green); background: #0e2a1e; color: var(--green); }
 .type-btn.expense.active { border-color: var(--red); background: #2a0e0e; color: var(--red); }
-
-.submit-btn {
-  width: 100%; background: var(--accent); color: #000; border: none;
-  border-radius: 12px; padding: 16px; font-size: 16px; font-weight: 900;
-  font-family: var(--font); cursor: pointer; margin-top: 6px; transition: opacity 0.15s;
-}
-.submit-btn:active { opacity: 0.85; }
+.submit-btn { width: 100%; background: var(--accent); color: #000; border: none; border-radius: 12px; padding: 15px; font-size: 16px; font-weight: 900; font-family: var(--font); cursor: pointer; margin-top: 6px; }
 .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
+.submit-btn.danger { background: var(--red); color: #fff; }
 .quick-notes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
-.qn {
-  background: var(--surface2); border: 1px solid var(--border);
-  border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--text2);
-  cursor: pointer; font-family: var(--font);
-}
-.qn:active { border-color: var(--accent); color: var(--accent); }
+.qn { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--text2); cursor: pointer; font-family: var(--font); }
 
-/* Records */
-.filter-bar { display: flex; gap: 6px; margin-bottom: 14px; overflow-x: auto; padding-bottom: 2px; }
+.filter-bar { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; }
 .filter-bar::-webkit-scrollbar { display: none; }
-.chip {
-  flex-shrink: 0; background: var(--surface); border: 1px solid var(--border);
-  border-radius: 20px; padding: 7px 14px; font-size: 13px; color: var(--text2);
-  cursor: pointer; white-space: nowrap; font-family: var(--font);
-}
+.chip { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--text2); cursor: pointer; white-space: nowrap; font-family: var(--font); }
 .chip.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 700; }
-
-.rec-list { display: flex; flex-direction: column; gap: 8px; }
-.rec-item {
-  background: var(--surface); border: 1px solid var(--border);
-  border-radius: var(--radius); padding: 13px 15px;
-  display: flex; gap: 12px; align-items: flex-start;
-  animation: fadeIn 0.2s ease;
-}
-@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-.rec-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
-.rec-dot.income { background: var(--green); }
-.rec-dot.expense { background: var(--red); }
+.rec-list { display: flex; flex-direction: column; gap: 7px; }
+.rec-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; animation: fadeIn 0.2s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+.rec-dot { width: 9px; height: 9px; border-radius: 50%; margin-top: 5px; flex-shrink: 0; }
+.rec-dot.income { background: var(--green); } .rec-dot.expense { background: var(--red); }
 .rec-body { flex: 1; min-width: 0; }
-.rec-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 3px; }
-.rec-loc { font-size: 14px; font-weight: 700; }
-.rec-amt { font-family: var(--mono); font-size: 15px; font-weight: 500; }
-.rec-amt.income { color: var(--green); }
-.rec-amt.expense { color: var(--red); }
-.rec-meta { font-size: 12px; color: var(--text2); display: flex; gap: 8px; flex-wrap: wrap; }
+.rec-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px; }
+.rec-loc { font-size: 13px; font-weight: 700; }
+.rec-amt { font-family: var(--mono); font-size: 14px; font-weight: 500; }
+.rec-amt.income { color: var(--green); } .rec-amt.expense { color: var(--red); }
+.rec-meta { font-size: 11px; color: var(--text2); display: flex; gap: 6px; flex-wrap: wrap; }
 .rec-date { color: var(--text3); }
-.rec-del { background: none; border: none; color: var(--text3); font-size: 16px; cursor: pointer; padding: 0 0 0 6px; flex-shrink: 0; }
-.rec-del:active { color: var(--red); }
+.rec-del { background: none; border: none; color: var(--text3); font-size: 15px; cursor: pointer; padding: 0 0 0 4px; flex-shrink: 0; }
 
-/* Locations */
-.loc-del { background: none; border: none; color: var(--text3); font-size: 16px; cursor: pointer; padding: 0; }
-.loc-del:active { color: var(--red); }
-.divider { height: 1px; background: var(--border); margin: 18px 0; }
+.user-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 8px; }
+.user-row { display: flex; align-items: center; gap: 10px; }
+.uavatar { width: 40px; height: 40px; border-radius: 50%; background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; overflow: hidden; }
+.uavatar img { width: 100%; height: 100%; object-fit: cover; }
+.uinfo { flex: 1; min-width: 0; }
+.uname { font-size: 14px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.uemail { font-size: 11px; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rbadge { font-size: 11px; padding: 3px 8px; border-radius: 10px; font-weight: 700; white-space: nowrap; }
+.r-admin { background: #f5c84222; color: var(--accent); }
+.r-editor { background: #4ee88a22; color: var(--green); }
+.r-viewer { background: #5ab4ff22; color: var(--blue); }
+.r-pending { background: #ff5f5f22; color: var(--red); }
+.grp-row { margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.grp-row-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+.grp-btns { display: flex; flex-wrap: wrap; gap: 6px; }
 
-/* Empty */
-.empty { text-align: center; padding: 48px 20px; color: var(--text3); }
-.empty-icon { font-size: 48px; margin-bottom: 12px; }
-.empty p { font-size: 14px; }
+.settings-section { margin-bottom: 20px; }
+.del-btn { background: none; border: none; color: var(--text3); font-size: 15px; cursor: pointer; padding: 0; }
+.divider { height: 1px; background: var(--border); margin: 16px 0; }
+.empty { text-align: center; padding: 36px 20px; color: var(--text3); }
+.empty-icon { font-size: 36px; margin-bottom: 8px; }
+.empty p { font-size: 13px; }
 
-/* Toast */
-.toast {
-  position: fixed; bottom: 28px; left: 50%;
-  transform: translateX(-50%) translateY(20px);
-  background: var(--green); color: #000; font-weight: 700; font-size: 14px;
-  padding: 10px 22px; border-radius: 22px; opacity: 0;
-  transition: all 0.28s; pointer-events: none; z-index: 200; white-space: nowrap;
-}
+#userMenu { position: fixed; top: 62px; right: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; z-index: 200; display: none; min-width: 180px; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+#userMenu.show { display: block; }
+.menu-item { padding: 10px 14px; border-radius: 8px; font-size: 14px; cursor: pointer; color: var(--text2); }
+.menu-item:active { background: var(--surface2); }
+.menu-item.danger { color: var(--red); }
+
+.toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--green); color: #000; font-weight: 700; font-size: 14px; padding: 10px 22px; border-radius: 22px; opacity: 0; transition: all 0.28s; pointer-events: none; z-index: 300; white-space: nowrap; }
 .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 .toast.err { background: var(--red); color: #fff; }
 </style>
 </head>
 <body>
 
-<!-- Splash -->
 <div id="splashScreen">
   <div class="splash-logo">🎮</div>
   <div class="splash-title">機台帳本</div>
   <div class="splash-sub">多裝置即時同步<br>正在連線雲端…</div>
   <div class="splash-status">
     <div><span class="dot spin" id="d1"></span>連接 Firebase…</div>
-    <div style="margin-top:6px"><span class="dot" id="d2"></span>載入地點資料…</div>
-    <div style="margin-top:6px"><span class="dot" id="d3"></span>載入記帳記錄…</div>
+    <div style="margin-top:6px"><span class="dot" id="d2"></span>驗證身分…</div>
+    <div style="margin-top:6px"><span class="dot" id="d3"></span>載入資料…</div>
   </div>
 </div>
 
-<!-- Main App -->
+<div id="loginScreen">
+  <div class="login-logo">🎮</div>
+  <div class="login-title">機台帳本</div>
+  <div class="login-sub">請用 Google 帳號登入<br>登入後等待管理員授權</div>
+  <button class="google-btn" onclick="signInGoogle()">
+    <svg width="22" height="22" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+    使用 Google 登入
+  </button>
+</div>
+
+<div id="pendingScreen">
+  <div class="pending-icon">⏳</div>
+  <div class="pending-title">等待授權</div>
+  <div class="pending-sub">你的帳號尚未獲得授權<br>請聯絡管理員（虎寶）開通權限</div>
+  <button class="logout-btn" onclick="doLogout()">登出</button>
+</div>
+
 <div id="mainApp" style="display:none">
   <div class="header">
     <div class="header-top">
       <h1>🎮 機台帳本</h1>
-      <div class="sync-badge">
-        <div class="sync-dot" id="syncDot"></div>
-        <span id="syncLabel">連線中</span>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="sync-badge"><div class="sync-dot" id="syncDot"></div><span id="syncLabel">連線中</span></div>
+        <div class="avatar-btn" id="avatarBtn" onclick="toggleUserMenu()">👤</div>
       </div>
     </div>
     <div class="tab-bar">
       <button class="tab active" onclick="switchTab('overview',this)">📊 總覽</button>
-      <button class="tab" onclick="switchTab('add',this)">➕ 記帳</button>
+      <button class="tab" id="tabAdd" onclick="switchTab('add',this)">➕ 記帳</button>
       <button class="tab" onclick="switchTab('records',this)">📋 明細</button>
-      <button class="tab" onclick="switchTab('locs',this)">📍 地點</button>
+      <button class="tab" id="tabSettings" onclick="switchTab('settings',this)">⚙️ 設定</button>
     </div>
   </div>
 
+  <div id="userMenu">
+    <div style="padding:10px 14px;border-bottom:1px solid var(--border);margin-bottom:4px">
+      <div style="font-size:13px;font-weight:700;color:var(--text)" id="menuName">—</div>
+      <div style="font-size:11px;color:var(--text2);margin-top:2px" id="menuEmail">—</div>
+      <div style="margin-top:6px" id="menuRole"></div>
+    </div>
+    <div class="menu-item danger" onclick="doLogout()">🚪 登出</div>
+  </div>
+
+  <!-- 總覽 -->
   <div class="page active" id="page-overview">
-    <div class="summary-card">
-      <div class="summary-label">本月總盈餘</div>
-      <div class="summary-amount" id="totalAmt">+0</div>
-      <div class="summary-period" id="totalPeriod"></div>
+    <div class="year-nav">
+      <button class="nav-btn" onclick="changeYear(-1)">‹</button>
+      <div class="year-nav-title" id="yearTitle">2026</div>
+      <button class="nav-btn" onclick="changeYear(1)">›</button>
+    </div>
+    <div class="group-tabs" id="overviewGroupTabs"></div>
+    <div class="year-summary">
+      <div><div class="lbl">年度總結餘</div><div class="amt" id="yearTotal" style="color:var(--green)">+0</div></div>
+      <div style="text-align:right">
+        <div class="lbl">收入</div><div style="font-family:var(--mono);font-size:14px;color:var(--green)" id="yearInc">0</div>
+        <div class="lbl" style="margin-top:6px">支出</div><div style="font-family:var(--mono);font-size:14px;color:var(--red)" id="yearExp">0</div>
+      </div>
+    </div>
+    <div class="month-grid" id="monthGrid"></div>
+    <div class="month-card">
+      <div class="lbl" id="monthLabel">本月結餘</div>
+      <div class="amt" id="monthTotal">+0</div>
     </div>
     <div class="mini-row">
-      <div class="mini-card"><div class="lbl">💰 總收入</div><div class="val g" id="totalInc">0</div></div>
-      <div class="mini-card"><div class="lbl">💸 總支出</div><div class="val r" id="totalExp">0</div></div>
+      <div class="mini-card"><div class="l">💰 收入</div><div class="v g" id="monthInc">0</div></div>
+      <div class="mini-card"><div class="l">💸 支出</div><div class="v r" id="monthExp">0</div></div>
     </div>
-    <div class="section-title">各地點本月狀況</div>
+    <div class="section-title">各地點狀況</div>
     <div class="loc-list" id="overviewLocs"></div>
   </div>
 
+  <!-- 記帳 -->
   <div class="page" id="page-add">
-    <div class="form-group">
-      <label class="form-label">類型</label>
+    <div class="form-group"><label class="form-label">類型</label>
       <div class="type-btns">
         <button class="type-btn income active" id="btnInc" onclick="setType('income')">💰 收入</button>
         <button class="type-btn expense" id="btnExp" onclick="setType('expense')">💸 支出</button>
       </div>
     </div>
-    <div class="form-group">
-      <label class="form-label">地點</label>
-      <select class="form-input" id="addLoc" onchange="onLocChange()">
-        <option value="">— 選擇地點 —</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">機台</label>
-      <select class="form-input" id="addMach">
-        <option value="">— 選擇機台 —</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">金額（元）</label>
-      <input type="number" class="form-input" id="addAmt" placeholder="0" inputmode="numeric">
-    </div>
-    <div class="form-group">
-      <label class="form-label">日期</label>
-      <input type="date" class="form-input" id="addDate">
-    </div>
-    <div class="form-group">
-      <label class="form-label">備註</label>
+    <div class="form-group"><label class="form-label">群組</label>
+      <select class="form-input" id="addGroup" onchange="onGroupChange()"><option value="">— 選擇群組 —</option></select></div>
+    <div class="form-group"><label class="form-label">地點</label>
+      <select class="form-input" id="addLoc" onchange="onLocChange()"><option value="">— 先選群組 —</option></select></div>
+    <div class="form-group"><label class="form-label">機台</label>
+      <select class="form-input" id="addMach"><option value="">— 先選地點 —</option></select></div>
+    <div class="form-group"><label class="form-label">金額（元）</label>
+      <input type="number" class="form-input" id="addAmt" placeholder="0" inputmode="numeric"></div>
+    <div class="form-group"><label class="form-label">日期</label>
+      <input type="date" class="form-input" id="addDate"></div>
+    <div class="form-group"><label class="form-label">備註</label>
       <input type="text" class="form-input" id="addNote" placeholder="例：出12補14">
       <div class="quick-notes" id="qnotes"></div>
     </div>
     <button class="submit-btn" id="saveBtn" onclick="addRecord()">✅ 儲存記帳</button>
   </div>
 
+  <!-- 明細 -->
   <div class="page" id="page-records">
     <div class="filter-bar" id="filterBar"></div>
     <div class="rec-list" id="recList"></div>
   </div>
 
-  <div class="page" id="page-locs">
-    <div class="form-group">
-      <label class="form-label">地點名稱</label>
-      <input type="text" class="form-input" id="newLocName" placeholder="例：東海">
+  <!-- 設定 -->
+  <div class="page" id="page-settings">
+    <div class="settings-section" id="userMgmtSection">
+      <div class="section-title">👥 使用者管理</div>
+      <div id="userList"></div>
+      <div class="divider"></div>
     </div>
-    <div class="form-group">
-      <label class="form-label">機台名稱（多台用逗號分隔）</label>
-      <input type="text" class="form-input" id="newLocMach" placeholder="例：公仔台,洗衣球,積木台">
+    <div class="settings-section" id="groupMgmtSection">
+      <div class="section-title">🏷️ 群組管理</div>
+      <div class="form-group"><label class="form-label">新增群組名稱</label>
+        <input type="text" class="form-input" id="newGroupName" placeholder="例：虎寶的、阿姨的"></div>
+      <button class="submit-btn" onclick="addGroup()" style="margin-bottom:10px">➕ 新增群組</button>
+      <div class="loc-list" id="groupMgmt"></div>
+      <div class="divider"></div>
     </div>
-    <button class="submit-btn" onclick="addLocation()" style="margin-bottom:20px">➕ 新增地點</button>
-    <div class="divider"></div>
-    <div class="section-title">現有地點</div>
-    <div class="loc-list" id="locMgmt"></div>
+    <div class="settings-section" id="locMgmtSection">
+      <div class="section-title">📍 地點管理</div>
+      <div class="form-group"><label class="form-label">所屬群組</label>
+        <select class="form-input" id="newLocGroup"><option value="">— 選擇群組 —</option></select></div>
+      <div class="form-group"><label class="form-label">地點名稱</label>
+        <input type="text" class="form-input" id="newLocName" placeholder="例：東海"></div>
+      <div class="form-group"><label class="form-label">機台名稱（多台用逗號分隔）</label>
+        <input type="text" class="form-input" id="newLocMach" placeholder="例：公仔台,洗衣球,積木台"></div>
+      <button class="submit-btn" onclick="addLocation()" style="margin-bottom:10px">➕ 新增地點</button>
+      <div class="loc-list" id="locMgmt"></div>
+      <div class="divider"></div>
+    </div>
+    <div class="settings-section">
+      <div class="section-title">👤 我的帳號</div>
+      <div class="loc-card">
+        <div class="loc-icon">👤</div>
+        <div class="loc-info"><div class="loc-name" id="myName">—</div><div class="loc-sub" id="myEmail">—</div></div>
+        <div class="rbadge" id="myRoleBadge">—</div>
+      </div>
+      <button class="submit-btn danger" onclick="doLogout()" style="margin-top:12px">🚪 登出</button>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getDatabase, ref, push, onValue, remove, set, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-const firebaseConfig = {
+const app = initializeApp({
   apiKey: "AIzaSyDHq1GFRYaMRw_X5yBzIOzxDA4QDEHeVr0",
   authDomain: "tigerbaby888-73a64.firebaseapp.com",
   databaseURL: "https://tigerbaby888-73a64-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -335,334 +331,394 @@ const firebaseConfig = {
   storageBucket: "tigerbaby888-73a64.firebasestorage.app",
   messagingSenderId: "352577971683",
   appId: "1:352577971683:web:66e7a13002b04ca0deacd6"
-};
-
-const app = initializeApp(firebaseConfig);
+});
 const db = getDatabase(app);
-
-window._fb = { db, ref, push, onValue, remove };
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+window._fb = { db, ref, push, onValue, remove, set, get, auth, provider, signInWithPopup, signOut, onAuthStateChanged };
 window.dispatchEvent(new Event('fbReady'));
 </script>
 
 <script>
 const ICONS = ['🎯','🎰','🎪','🏪','🎠','🎡','🎢','🎭','🎮','🕹️','🃏','🎲'];
-let locations = {};
-let records = {};
-let currentType = 'income';
-let currentFilter = 'all';
-let db, fbRef, fbPush, fbOnValue, fbRemove;
+const GCOLORS = ['#b47fff','#f5c842','#4ee88a','#5ab4ff','#ff5f5f','#ff9a5c'];
+const ADMIN_EMAIL_KEY = 'tigerbaby'; // 自動識別管理員
 
-window.addEventListener('fbReady', async () => {
-  db = window._fb.db;
-  fbRef = window._fb.ref;
-  fbPush = window._fb.push;
-  fbOnValue = window._fb.onValue;
-  fbRemove = window._fb.remove;
+let groups={}, locations={}, records={}, users={};
+let currentUser=null, currentUserData=null;
+let currentType='income', currentFilter='all';
+let currentYear=new Date().getFullYear(), currentMonth=new Date().getMonth()+1;
+let currentOvGroup='all';
+let db,fbRef,fbPush,fbOnValue,fbRemove,fbSet,fbGet,auth,provider,_signIn,_signOut,_onAuth;
+let _shown=false;
 
-  document.getElementById('d1').className = 'dot ok';
-
-  // Listen locations
-  document.getElementById('d2').className = 'dot spin';
-  fbOnValue(fbRef(db, 'locations'), snap => {
-    locations = snap.val() || {};
-    document.getElementById('d2').className = 'dot ok';
-    renderAll();
-    tryShowApp();
-  });
-
-  // Listen records
-  document.getElementById('d3').className = 'dot spin';
-  fbOnValue(fbRef(db, 'records'), snap => {
-    records = snap.val() || {};
-    document.getElementById('d3').className = 'dot ok';
-    renderAll();
-    tryShowApp();
+window.addEventListener('fbReady', () => {
+  const fb=window._fb;
+  db=fb.db; fbRef=fb.ref; fbPush=fb.push; fbOnValue=fb.onValue;
+  fbRemove=fb.remove; fbSet=fb.set; fbGet=fb.get;
+  auth=fb.auth; provider=fb.provider;
+  _signIn=fb.signInWithPopup; _signOut=fb.signOut; _onAuth=fb.onAuthStateChanged;
+  document.getElementById('d1').className='dot ok';
+  document.getElementById('d2').className='dot spin';
+  _onAuth(auth, async (user) => {
+    if (user) {
+      currentUser=user;
+      document.getElementById('d2').className='dot ok';
+      document.getElementById('d3').className='dot spin';
+      await initUser(user);
+    } else {
+      currentUser=null; currentUserData=null; _shown=false;
+      document.getElementById('splashScreen').style.display='none';
+      document.getElementById('mainApp').style.display='none';
+      document.getElementById('pendingScreen').style.display='none';
+      document.getElementById('loginScreen').style.display='flex';
+    }
   });
 });
 
-let _shown = false;
-function tryShowApp() {
-  if (_shown) return;
-  const d2 = document.getElementById('d2').className;
-  const d3 = document.getElementById('d3').className;
-  if (d2.includes('ok') && d3.includes('ok')) {
-    _shown = true;
-    // Seed default locations if empty
-    if (Object.keys(locations).length === 0) seedDefaults();
-    setTimeout(() => {
-      document.getElementById('splashScreen').style.display = 'none';
-      document.getElementById('mainApp').style.display = 'block';
-      document.getElementById('syncDot').className = 'sync-dot live';
-      document.getElementById('syncLabel').textContent = '即時同步';
-      setupAddForm();
-    }, 500);
+async function initUser(user) {
+  const uRef = fbRef(db,'users/'+user.uid);
+  const snap = await fbGet(uRef);
+  if (!snap.exists()) {
+    const isAdmin = user.email && user.email.toLowerCase().includes(ADMIN_EMAIL_KEY);
+    await fbSet(uRef, { name:user.displayName||user.email, email:user.email, photo:user.photoURL||'', role:isAdmin?'admin':'pending', groupIds:[], createdAt:Date.now() });
   }
+  fbOnValue(uRef, snap => {
+    currentUserData = snap.val();
+    if (currentUserData) onUserDataReady();
+  });
+}
+
+function onUserDataReady() {
+  if (!currentUserData) return;
+  if (currentUserData.role==='pending') {
+    document.getElementById('splashScreen').style.display='none';
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('pendingScreen').style.display='flex';
+    return;
+  }
+  if (!_shown) {
+    fbOnValue(fbRef(db,'groups'), s => { groups=s.val()||{}; renderAll(); });
+    fbOnValue(fbRef(db,'locations'), s => { locations=s.val()||{}; renderAll(); tryShow(); });
+    fbOnValue(fbRef(db,'records'), s => { records=s.val()||{}; document.getElementById('d3').className='dot ok'; renderAll(); tryShow(); });
+    if (currentUserData.role==='admin') fbOnValue(fbRef(db,'users'), s => { users=s.val()||{}; renderUserList(); });
+  }
+}
+
+function tryShow() {
+  if (_shown) return; _shown=true;
+  if (!Object.keys(locations).length && currentUserData?.role==='admin') seedDefaults();
+  setTimeout(() => {
+    document.getElementById('splashScreen').style.display='none';
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('pendingScreen').style.display='none';
+    document.getElementById('mainApp').style.display='block';
+    document.getElementById('syncDot').className='sync-dot live';
+    document.getElementById('syncLabel').textContent='即時同步';
+    setupUI();
+  }, 300);
 }
 
 async function seedDefaults() {
-  const defaults = [
-    { name: '西安', icon: '🎯', machines: ['標準台', 'k霸台'] },
-    { name: '東海', icon: '🎰', machines: ['公仔刮刮台', '洗衣球台', '積木台'] },
-    { name: '埔里喜樂夾', icon: '🎪', machines: ['濕紙巾台', '洗衣球台'] },
-    { name: '魚池', icon: '🏪', machines: ['機台'] },
-    { name: '滷味', icon: '🎠', machines: ['機台'] },
-    { name: '虱目魚', icon: '🎡', machines: ['公仔台', '雜物台'] },
-    { name: '復興火車站', icon: '🎢', machines: ['機台'] },
-    { name: '大成萬代福', icon: '🎭', machines: ['機台'] },
-    { name: '南屯', icon: '🎮', machines: ['機台'] },
-  ];
-  for (const d of defaults) await fbPush(fbRef(db, 'locations'), d);
+  const g1=await fbPush(fbRef(db,'groups'),{name:'虎寶的',color:GCOLORS[0]});
+  const g2=await fbPush(fbRef(db,'groups'),{name:'阿姨的',color:GCOLORS[1]});
+  const id1=g1.key;
+  for (const l of [
+    {name:'西安',icon:'🎯',machines:['標準台','k霸台'],groupId:id1},
+    {name:'東海',icon:'🎰',machines:['公仔刮刮台','洗衣球台','積木台'],groupId:id1},
+    {name:'埔里喜樂夾',icon:'🎪',machines:['濕紙巾台','洗衣球台'],groupId:id1},
+    {name:'魚池',icon:'🏪',machines:['機台'],groupId:id1},
+    {name:'滷味',icon:'🎠',machines:['機台'],groupId:id1},
+    {name:'虱目魚',icon:'🎡',machines:['公仔台','雜物台'],groupId:id1},
+    {name:'復興火車站',icon:'🎢',machines:['機台'],groupId:id1},
+    {name:'大成萬代福',icon:'🎭',machines:['機台'],groupId:id1},
+    {name:'南屯',icon:'🎮',machines:['機台'],groupId:id1},
+  ]) await fbPush(fbRef(db,'locations'),l);
 }
 
-// ── Render ──
-function renderAll() {
-  renderOverview();
-  renderRecords();
-  renderLocMgmt();
-  refreshLocSelects();
-}
+function setupUI() {
+  const isAdmin=currentUserData?.role==='admin';
+  const isViewer=currentUserData?.role==='viewer';
+  document.getElementById('tabAdd').classList.toggle('hidden',isViewer);
+  document.getElementById('tabSettings').classList.toggle('hidden',!isAdmin);
+  document.getElementById('userMgmtSection').style.display=isAdmin?'block':'none';
+  document.getElementById('groupMgmtSection').style.display=isAdmin?'block':'none';
+  document.getElementById('locMgmtSection').style.display=isAdmin?'block':'none';
 
-function fmt(n) { return Math.abs(n||0).toLocaleString(); }
-function fmtS(n) { return (n>=0?'+':'-') + fmt(n); }
-function thisMonth() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
-}
+  const name=currentUser?.displayName||currentUserData?.name||'使用者';
+  const email=currentUser?.email||'';
+  const photo=currentUser?.photoURL||'';
+  document.getElementById('myName').textContent=name;
+  document.getElementById('myEmail').textContent=email;
+  document.getElementById('menuName').textContent=name;
+  document.getElementById('menuEmail').textContent=email;
+  if (photo) document.getElementById('avatarBtn').innerHTML=`<img src="${photo}">`;
 
-function renderOverview() {
-  const month = thisMonth();
-  const recs = Object.values(records).filter(r => r.date && r.date.startsWith(month));
-  let inc = 0, exp = 0;
-  recs.forEach(r => { if(r.type==='income') inc+=r.amount; else exp+=r.amount; });
-  const net = inc - exp;
-  const el = document.getElementById('totalAmt');
-  el.textContent = fmtS(net);
-  el.className = 'summary-amount' + (net<0?' neg':'');
-  document.getElementById('totalInc').textContent = fmt(inc);
-  document.getElementById('totalExp').textContent = fmt(exp);
-  const d = new Date();
-  document.getElementById('totalPeriod').textContent = `${d.getFullYear()} 年 ${d.getMonth()+1} 月`;
+  const roleMap={admin:['👑 管理員','r-admin'],editor:['✏️ 記帳員','r-editor'],viewer:['👁️ 檢視者','r-viewer']};
+  const [rt,rc]=roleMap[currentUserData?.role]||['—',''];
+  document.getElementById('myRoleBadge').textContent=rt;
+  document.getElementById('myRoleBadge').className='rbadge '+rc;
+  document.getElementById('menuRole').innerHTML=`<span class="rbadge ${rc}">${rt}</span>`;
 
-  const container = document.getElementById('overviewLocs');
-  container.innerHTML = '';
-  const locs = Object.entries(locations);
-  if (!locs.length) {
-    container.innerHTML = '<div class="empty"><div class="empty-icon">📍</div><p>前往「地點」頁面新增地點</p></div>';
-    return;
-  }
-  locs.forEach(([id, loc]) => {
-    const lr = recs.filter(r => r.locationId === id);
-    let li=0, le=0;
-    lr.forEach(r => { if(r.type==='income') li+=r.amount; else le+=r.amount; });
-    const ln = li - le;
-    const div = document.createElement('div');
-    div.className = 'loc-card';
-    div.innerHTML = `
-      <div class="loc-icon">${loc.icon||'🎮'}</div>
-      <div class="loc-info">
-        <div class="loc-name">${loc.name}</div>
-        <div class="loc-sub">${lr.length} 筆 · ${(loc.machines||[]).length} 台</div>
-      </div>
-      <div class="loc-amount ${ln>=0?'p':'n'}">${fmtS(ln)}</div>
-    `;
-    container.appendChild(div);
-  });
-}
-
-function renderRecords() {
-  const bar = document.getElementById('filterBar');
-  bar.innerHTML = `<button class="chip${currentFilter==='all'?' active':''}" onclick="setFilter('all',this)">全部</button>`;
-  Object.entries(locations).forEach(([id,loc]) => {
-    const btn = document.createElement('button');
-    btn.className = 'chip' + (currentFilter===id?' active':'');
-    btn.textContent = (loc.icon||'🎮') + ' ' + loc.name;
-    btn.onclick = () => setFilter(id, btn);
-    bar.appendChild(btn);
-  });
-
-  const list = document.getElementById('recList');
-  let recs = Object.entries(records).map(([id,r]) => ({...r, _id:id}));
-  recs.sort((a,b) => (b.ts||0)-(a.ts||0));
-  if (currentFilter !== 'all') recs = recs.filter(r => r.locationId === currentFilter);
-
-  if (!recs.length) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">📋</div><p>還沒有記帳記錄</p></div>';
-    return;
-  }
-  list.innerHTML = '';
-  recs.forEach(r => {
-    const div = document.createElement('div');
-    div.className = 'rec-item';
-    div.innerHTML = `
-      <div class="rec-dot ${r.type}"></div>
-      <div class="rec-body">
-        <div class="rec-top">
-          <span class="rec-loc">${r.locationName||''} · ${r.machine||''}</span>
-          <span class="rec-amt ${r.type}">${r.type==='income'?'+':'-'}${fmt(r.amount)}</span>
-        </div>
-        <div class="rec-meta">
-          <span class="rec-date">${r.date||''}</span>
-          ${r.note ? `<span>${r.note}</span>` : ''}
-        </div>
-      </div>
-      <button class="rec-del" onclick="delRecord('${r._id}')">🗑</button>
-    `;
-    list.appendChild(div);
-  });
-}
-
-function renderLocMgmt() {
-  const list = document.getElementById('locMgmt');
-  list.innerHTML = '';
-  const locs = Object.entries(locations);
-  if (!locs.length) {
-    list.innerHTML = '<div class="empty"><div class="empty-icon">📍</div><p>尚無地點</p></div>';
-    return;
-  }
-  locs.forEach(([id, loc]) => {
-    const rc = Object.values(records).filter(r=>r.locationId===id).length;
-    const div = document.createElement('div');
-    div.className = 'loc-card';
-    div.innerHTML = `
-      <div class="loc-icon">${loc.icon||'🎮'}</div>
-      <div class="loc-info">
-        <div class="loc-name">${loc.name}</div>
-        <div class="loc-sub">${(loc.machines||[]).join(' · ')} · ${rc} 筆記錄</div>
-      </div>
-      <button class="loc-del" onclick="delLocation('${id}')">🗑</button>
-    `;
-    list.appendChild(div);
-  });
-}
-
-function refreshLocSelects() {
-  const sel = document.getElementById('addLoc');
-  if (!sel) return;
-  const saved = sel.value;
-  sel.innerHTML = '<option value="">— 選擇地點 —</option>';
-  Object.entries(locations).forEach(([id, loc]) => {
-    const opt = document.createElement('option');
-    opt.value = id; opt.textContent = (loc.icon||'🎮') + ' ' + loc.name;
-    sel.appendChild(opt);
-  });
-  if (saved) { sel.value = saved; onLocChange(); }
-}
-
-// ── Actions ──
-function switchTab(tab, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('page-' + tab).classList.add('active');
-  btn.classList.add('active');
-}
-
-function setType(t) {
-  currentType = t;
-  document.getElementById('btnInc').classList.toggle('active', t==='income');
-  document.getElementById('btnExp').classList.toggle('active', t==='expense');
-}
-
-function setFilter(f, btn) {
-  currentFilter = f;
-  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-  if (btn) btn.classList.add('active');
-  renderRecords();
-}
-
-function onLocChange() {
-  const locId = document.getElementById('addLoc').value;
-  const loc = locations[locId];
-  const sel = document.getElementById('addMach');
-  sel.innerHTML = '<option value="">— 選擇機台 —</option>';
-  if (loc && loc.machines) {
-    loc.machines.forEach(m => {
-      const opt = document.createElement('option');
-      opt.value = m; opt.textContent = m; sel.appendChild(opt);
-    });
-    if (loc.machines.length === 1) sel.value = loc.machines[0];
-  }
-}
-
-function setupAddForm() {
-  document.getElementById('addDate').value = new Date().toISOString().split('T')[0];
-  const qn = document.getElementById('qnotes');
-  qn.innerHTML = '';
-  ['出幾隻','補貨','刮出','刮出補','租金','收幣','補台'].forEach(n => {
-    const b = document.createElement('button');
-    b.className = 'qn'; b.textContent = n;
-    b.onclick = () => {
-      const inp = document.getElementById('addNote');
-      inp.value = (inp.value ? inp.value + ' ' : '') + n;
-    };
+  document.getElementById('addDate').value=new Date().toISOString().split('T')[0];
+  const qn=document.getElementById('qnotes'); qn.innerHTML='';
+  ['出幾隻','補貨','刮出','刮出補','租金','收幣','補台'].forEach(n=>{
+    const b=document.createElement('button'); b.className='qn'; b.textContent=n;
+    b.onclick=()=>{const i=document.getElementById('addNote');i.value=(i.value?i.value+' ':'')+n;};
     qn.appendChild(b);
   });
-  refreshLocSelects();
 }
 
-async function addRecord() {
-  const locId = document.getElementById('addLoc').value;
-  const machine = document.getElementById('addMach').value;
-  const amount = parseFloat(document.getElementById('addAmt').value);
-  const date = document.getElementById('addDate').value;
-  const note = document.getElementById('addNote').value.trim();
+// Auth
+async function signInGoogle() { try { await _signIn(auth,provider); } catch(e) { showToast('❌ 登入失敗',true); } }
+window.signInGoogle=signInGoogle;
+async function doLogout() { await _signOut(auth); document.getElementById('userMenu').classList.remove('show'); }
+window.doLogout=doLogout;
+function toggleUserMenu() { document.getElementById('userMenu').classList.toggle('show'); }
+window.toggleUserMenu=toggleUserMenu;
+document.addEventListener('click', e => { if(!e.target.closest('#userMenu')&&!e.target.closest('#avatarBtn')) document.getElementById('userMenu').classList.remove('show'); });
 
-  if (!locId) { showToast('⚠️ 請選擇地點', true); return; }
-  if (!amount || isNaN(amount) || amount <= 0) { showToast('⚠️ 請輸入金額', true); return; }
-  if (!date) { showToast('⚠️ 請選擇日期', true); return; }
+// User Mgmt
+function renderUserList() {
+  const list=document.getElementById('userList'); if(!list) return;
+  list.innerHTML='';
+  const us=Object.entries(users);
+  if (!us.length) { list.innerHTML='<div class="empty"><div class="empty-icon">👥</div><p>尚無使用者</p></div>'; return; }
+  const rmap={admin:['👑 管理員','r-admin'],editor:['✏️ 記帳員','r-editor'],viewer:['👁️ 檢視者','r-viewer'],pending:['⏳ 待審核','r-pending']};
+  us.forEach(([uid,u]) => {
+    const [rt,rc]=rmap[u.role]||['—',''];
+    const isSelf=uid===currentUser?.uid;
+    const card=document.createElement('div'); card.className='user-card';
+    card.innerHTML=`<div class="user-row">
+      <div class="uavatar">${u.photo?`<img src="${u.photo}">`:'👤'}</div>
+      <div class="uinfo"><div class="uname">${u.name||'—'}${isSelf?' (我)':''}</div><div class="uemail">${u.email||'—'}</div></div>
+      ${isSelf?`<span class="rbadge ${rc}">${rt}</span>`:`<select class="form-input" style="width:110px;padding:6px 10px;font-size:12px" onchange="changeRole('${uid}',this.value)">
+        <option value="pending" ${u.role==='pending'?'selected':''}>⏳ 待審核</option>
+        <option value="viewer" ${u.role==='viewer'?'selected':''}>👁️ 檢視者</option>
+        <option value="editor" ${u.role==='editor'?'selected':''}>✏️ 記帳員</option>
+        <option value="admin" ${u.role==='admin'?'selected':''}>👑 管理員</option>
+      </select>`}
+    </div>`;
+    if (!isSelf && u.role!=='pending' && u.role!=='admin') {
+      const gr=document.createElement('div'); gr.className='grp-row';
+      gr.innerHTML=`<div class="grp-row-label">可存取群組：</div><div class="grp-btns">${
+        Object.entries(groups).map(([gid,g])=>{
+          const has=(u.groupIds||[]).includes(gid);
+          return `<button onclick="toggleGrp('${uid}','${gid}')" style="padding:4px 12px;border-radius:12px;border:1px solid ${has?g.color:'var(--border)'};background:${has?g.color+'22':'var(--surface2)'};color:${has?g.color:'var(--text3)'};font-size:12px;cursor:pointer;font-family:var(--font)">${g.name}</button>`;
+        }).join('')
+      }</div>`;
+      card.appendChild(gr);
+    }
+    list.appendChild(card);
+  });
+}
+async function changeRole(uid,role) { try { await fbSet(fbRef(db,'users/'+uid+'/role'),role); showToast('✅ 權限已更新'); } catch(e){showToast('❌失敗',true);} }
+window.changeRole=changeRole;
+async function toggleGrp(uid,gid) {
+  const u=users[uid]; if(!u) return;
+  const ids=[...(u.groupIds||[])]; const i=ids.indexOf(gid);
+  if(i>=0) ids.splice(i,1); else ids.push(gid);
+  try { await fbSet(fbRef(db,'users/'+uid+'/groupIds'),ids); showToast('✅ 群組已更新'); } catch(e){showToast('❌失敗',true);}
+}
+window.toggleGrp=toggleGrp;
 
-  const btn = document.getElementById('saveBtn');
-  btn.disabled = true; btn.textContent = '儲存中…';
-  try {
-    const loc = locations[locId];
-    await fbPush(fbRef(db, 'records'), {
-      type: currentType, locationId: locId, locationName: loc.name,
-      machine: machine || '機台', amount: Math.abs(amount), date, note, ts: Date.now()
-    });
-    document.getElementById('addAmt').value = '';
-    document.getElementById('addNote').value = '';
-    showToast('✅ 已同步儲存！');
-  } catch(e) {
-    showToast('❌ 儲存失敗', true);
+// Helpers
+function fmt(n){return Math.abs(n||0).toLocaleString();}
+function fmtS(n){n=n||0;return(n>=0?'+':'-')+fmt(n);}
+function getAllowed(){if(!currentUserData)return[];if(currentUserData.role==='admin')return Object.keys(groups);return currentUserData.groupIds||[];}
+function getFilteredRecs(year,month,groupId){
+  const allowed=getAllowed();
+  const alLocs=Object.entries(locations).filter(([,l])=>allowed.includes(l.groupId)).map(([id])=>id);
+  let recs=Object.values(records).filter(r=>alLocs.includes(r.locationId));
+  if(year) recs=recs.filter(r=>r.date&&r.date.startsWith(String(year)));
+  if(month){const m=String(month).padStart(2,'0');recs=recs.filter(r=>r.date&&r.date.startsWith(`${year}-${m}`));}
+  if(groupId&&groupId!=='all'){const lids=Object.entries(locations).filter(([,l])=>l.groupId===groupId).map(([id])=>id);recs=recs.filter(r=>lids.includes(r.locationId));}
+  return recs;
+}
+function calcNet(recs){let inc=0,exp=0;recs.forEach(r=>{if(r.type==='income')inc+=r.amount;else exp+=r.amount;});return{inc,exp,net:inc-exp};}
+
+function renderAll(){
+  if(!currentUserData||currentUserData.role==='pending') return;
+  renderOverview(); renderRecords(); renderGroupMgmt(); renderLocMgmt(); refreshGroupSelects();
+  if(currentUserData.role==='admin') renderUserList();
+}
+
+// Overview
+function renderOverview(){
+  document.getElementById('yearTitle').textContent=currentYear;
+  const allowed=getAllowed();
+  const allowedGrps=Object.entries(groups).filter(([id])=>allowed.includes(id));
+  const gt=document.getElementById('overviewGroupTabs');
+  gt.innerHTML=`<button class="group-tab" style="${currentOvGroup==='all'?'background:var(--accent);border-color:var(--accent);color:#000;font-weight:700':''}" onclick="setOvGroup('all')">全部</button>`;
+  allowedGrps.forEach(([id,g])=>{
+    const a=currentOvGroup===id;
+    const btn=document.createElement('button'); btn.className='group-tab';
+    btn.textContent=g.name; btn.style.cssText=a?`background:${g.color};border-color:${g.color};color:#000;font-weight:700`:'';
+    btn.onclick=()=>setOvGroup(id); gt.appendChild(btn);
+  });
+  const yr=getFilteredRecs(currentYear,null,currentOvGroup);
+  const{inc:yi,exp:ye,net:yn}=calcNet(yr);
+  const yt=document.getElementById('yearTotal'); yt.textContent=fmtS(yn); yt.style.color=yn>=0?'var(--green)':'var(--red)';
+  document.getElementById('yearInc').textContent=fmt(yi); document.getElementById('yearExp').textContent=fmt(ye);
+  const grid=document.getElementById('monthGrid'); grid.innerHTML='';
+  for(let m=1;m<=12;m++){
+    const mr=getFilteredRecs(currentYear,m,currentOvGroup); const{net}=calcNet(mr);
+    const btn=document.createElement('button');
+    btn.className='month-btn'+(m===currentMonth?' active':'')+(mr.length>0?' has-data':'');
+    btn.innerHTML=`<div>${m}月</div><div class="mnet ${net>=0?'pos':'neg'}">${mr.length>0?fmtS(net):''}</div>`;
+    btn.onclick=()=>{currentMonth=m;renderOverview();}; grid.appendChild(btn);
   }
-  btn.disabled = false; btn.textContent = '✅ 儲存記帳';
+  const mr=getFilteredRecs(currentYear,currentMonth,currentOvGroup);
+  const{inc:mi,exp:me,net:mn}=calcNet(mr);
+  document.getElementById('monthLabel').textContent=`${currentYear}年 ${currentMonth}月 結餘`;
+  const mt=document.getElementById('monthTotal'); mt.textContent=fmtS(mn); mt.className='amt'+(mn<0?' neg':'');
+  document.getElementById('monthInc').textContent=fmt(mi); document.getElementById('monthExp').textContent=fmt(me);
+  const cont=document.getElementById('overviewLocs'); cont.innerHTML='';
+  let locs=Object.entries(locations).filter(([,l])=>allowed.includes(l.groupId));
+  if(currentOvGroup!=='all') locs=locs.filter(([,l])=>l.groupId===currentOvGroup);
+  if(!locs.length){cont.innerHTML='<div class="empty"><div class="empty-icon">📍</div><p>前往「設定」新增地點</p></div>';return;}
+  locs.forEach(([id,loc])=>{
+    const lr=mr.filter(r=>r.locationId===id); const{net:ln}=calcNet(lr);
+    const grp=groups[loc.groupId]; const div=document.createElement('div'); div.className='loc-card';
+    div.innerHTML=`<div class="loc-icon">${loc.icon||'🎮'}</div><div class="loc-info"><div class="loc-name">${loc.name}<span class="gbadge" style="color:${grp?.color||'var(--text3)'}">${grp?.name||''}</span></div><div class="loc-sub">${lr.length} 筆 · ${(loc.machines||[]).length} 台</div></div><div class="loc-amt ${ln>=0?'p':'n'}">${fmtS(ln)}</div>`;
+    cont.appendChild(div);
+  });
+}
+function setOvGroup(id){currentOvGroup=id;renderOverview();} window.setOvGroup=setOvGroup;
+function changeYear(d){currentYear+=d;renderOverview();} window.changeYear=changeYear;
+
+// Records
+function renderRecords(){
+  const allowed=getAllowed();
+  const bar=document.getElementById('filterBar');
+  bar.innerHTML=`<button class="chip${currentFilter==='all'?' active':''}" onclick="setFilter('all',this)">全部</button>`;
+  Object.entries(groups).filter(([id])=>allowed.includes(id)).forEach(([id,g])=>{
+    const btn=document.createElement('button'); btn.className='chip'+(currentFilter===id?' active':'');
+    btn.textContent=g.name; btn.style.cssText=currentFilter===id?`background:${g.color};border-color:${g.color};color:#000`:'';
+    btn.onclick=()=>setFilter(id,btn); bar.appendChild(btn);
+  });
+  const list=document.getElementById('recList');
+  const alLocs=Object.entries(locations).filter(([,l])=>allowed.includes(l.groupId)).map(([id])=>id);
+  let recs=Object.entries(records).map(([id,r])=>({...r,_id:id})).filter(r=>alLocs.includes(r.locationId));
+  recs.sort((a,b)=>(b.ts||0)-(a.ts||0));
+  if(currentFilter!=='all'){const lids=Object.entries(locations).filter(([,l])=>l.groupId===currentFilter).map(([id])=>id);recs=recs.filter(r=>lids.includes(r.locationId));}
+  if(!recs.length){list.innerHTML='<div class="empty"><div class="empty-icon">📋</div><p>還沒有記帳記錄</p></div>';return;}
+  list.innerHTML='';
+  const canDel=currentUserData?.role==='admin';
+  recs.forEach(r=>{
+    const div=document.createElement('div'); div.className='rec-item';
+    div.innerHTML=`<div class="rec-dot ${r.type}"></div><div class="rec-body"><div class="rec-top"><span class="rec-loc">${r.locationName||''} · ${r.machine||''}</span><span class="rec-amt ${r.type}">${r.type==='income'?'+':'-'}${fmt(r.amount)}</span></div><div class="rec-meta"><span class="rec-date">${r.date||''}</span>${r.groupName?`<span style="color:var(--purple)">${r.groupName}</span>`:''} ${r.note?`<span>${r.note}</span>`:''}</div></div>${canDel?`<button class="rec-del" onclick="delRecord('${r._id}')">🗑</button>`:''}`;
+    list.appendChild(div);
+  });
+}
+function setFilter(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.chip').forEach(c=>{c.classList.remove('active');c.style.cssText='';});
+  if(btn){btn.classList.add('active');if(f!=='all'){const g=groups[f];if(g)btn.style.cssText=`background:${g.color};border-color:${g.color};color:#000`;}}
+  renderRecords();
+}
+window.setFilter=setFilter;
+
+// Settings
+function renderGroupMgmt(){
+  if(currentUserData?.role!=='admin') return;
+  const list=document.getElementById('groupMgmt'); list.innerHTML='';
+  Object.entries(groups).forEach(([id,g])=>{
+    const div=document.createElement('div'); div.className='loc-card';
+    div.innerHTML=`<div class="loc-icon" style="background:${g.color}22">🏷️</div><div class="loc-info"><div class="loc-name" style="color:${g.color}">${g.name}</div><div class="loc-sub">${Object.values(locations).filter(l=>l.groupId===id).length} 個地點</div></div><button class="del-btn" onclick="delGroup('${id}')">🗑</button>`;
+    list.appendChild(div);
+  });
+}
+function renderLocMgmt(){
+  if(currentUserData?.role!=='admin') return;
+  const list=document.getElementById('locMgmt'); list.innerHTML='';
+  Object.entries(locations).forEach(([id,loc])=>{
+    const rc=Object.values(records).filter(r=>r.locationId===id).length;
+    const grp=groups[loc.groupId]; const div=document.createElement('div'); div.className='loc-card';
+    div.innerHTML=`<div class="loc-icon">${loc.icon||'🎮'}</div><div class="loc-info"><div class="loc-name">${loc.name}<span class="gbadge" style="color:${grp?.color||'var(--text3)'}">${grp?.name||'未分組'}</span></div><div class="loc-sub">${(loc.machines||[]).join(' · ')} · ${rc} 筆</div></div><button class="del-btn" onclick="delLocation('${id}')">🗑</button>`;
+    list.appendChild(div);
+  });
+}
+function refreshGroupSelects(){
+  const allowed=getAllowed();
+  ['addGroup','newLocGroup'].forEach(sid=>{
+    const sel=document.getElementById(sid); if(!sel) return;
+    const saved=sel.value;
+    sel.innerHTML='<option value="">— 選擇群組 —</option>';
+    Object.entries(groups).filter(([id])=>currentUserData?.role==='admin'||allowed.includes(id)).forEach(([id,g])=>{
+      const opt=document.createElement('option'); opt.value=id; opt.textContent=g.name; sel.appendChild(opt);
+    });
+    if(saved) sel.value=saved;
+  });
 }
 
-async function delRecord(id) {
-  if (!confirm('確定刪除這筆記錄？')) return;
+// Form
+function onGroupChange(){
+  const gid=document.getElementById('addGroup').value;
+  const ls=document.getElementById('addLoc'); ls.innerHTML='<option value="">— 選擇地點 —</option>';
+  document.getElementById('addMach').innerHTML='<option value="">— 先選地點 —</option>';
+  if(!gid) return;
+  Object.entries(locations).filter(([,l])=>l.groupId===gid).forEach(([id,loc])=>{const opt=document.createElement('option');opt.value=id;opt.textContent=(loc.icon||'🎮')+' '+loc.name;ls.appendChild(opt);});
+}
+window.onGroupChange=onGroupChange;
+function onLocChange(){
+  const loc=locations[document.getElementById('addLoc').value];
+  const sel=document.getElementById('addMach'); sel.innerHTML='<option value="">— 選擇機台 —</option>';
+  if(loc?.machines){loc.machines.forEach(m=>{const opt=document.createElement('option');opt.value=m;opt.textContent=m;sel.appendChild(opt);});if(loc.machines.length===1)sel.value=loc.machines[0];}
+}
+window.onLocChange=onLocChange;
+
+function switchTab(tab,btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+tab).classList.add('active'); btn.classList.add('active');
+  document.getElementById('userMenu').classList.remove('show');
+}
+window.switchTab=switchTab;
+function setType(t){currentType=t;document.getElementById('btnInc').classList.toggle('active',t==='income');document.getElementById('btnExp').classList.toggle('active',t==='expense');}
+window.setType=setType;
+
+// CRUD
+async function addRecord(){
+  const gid=document.getElementById('addGroup').value, lid=document.getElementById('addLoc').value;
+  const mach=document.getElementById('addMach').value, amt=parseFloat(document.getElementById('addAmt').value);
+  const date=document.getElementById('addDate').value, note=document.getElementById('addNote').value.trim();
+  if(!gid){showToast('⚠️ 請選擇群組',true);return;} if(!lid){showToast('⚠️ 請選擇地點',true);return;}
+  if(!amt||isNaN(amt)||amt<=0){showToast('⚠️ 請輸入金額',true);return;} if(!date){showToast('⚠️ 請選擇日期',true);return;}
+  const btn=document.getElementById('saveBtn'); btn.disabled=true; btn.textContent='儲存中…';
   try {
-    await fbRemove(fbRef(db, 'records/' + id));
-    showToast('🗑 已刪除');
-  } catch(e) { showToast('❌ 刪除失敗', true); }
+    const loc=locations[lid],grp=groups[gid];
+    await fbPush(fbRef(db,'records'),{type:currentType,locationId:lid,locationName:loc.name,groupId:gid,groupName:grp?.name||'',machine:mach||'機台',amount:Math.abs(amt),date,note,ts:Date.now(),addedBy:currentUser?.uid,addedByName:currentUserData?.name||''});
+    document.getElementById('addAmt').value=''; document.getElementById('addNote').value='';
+    showToast('✅ 已同步儲存！');
+  } catch(e){showToast('❌ 儲存失敗',true);}
+  btn.disabled=false; btn.textContent='✅ 儲存記帳';
 }
+window.addRecord=addRecord;
+async function delRecord(id){if(!confirm('確定刪除？'))return;try{await fbRemove(fbRef(db,'records/'+id));showToast('🗑 已刪除');}catch(e){showToast('❌失敗',true);}}
+window.delRecord=delRecord;
+async function addGroup(){
+  const name=document.getElementById('newGroupName').value.trim();
+  if(!name){showToast('⚠️ 請輸入名稱',true);return;}
+  const color=GCOLORS[Object.keys(groups).length%GCOLORS.length];
+  try{await fbPush(fbRef(db,'groups'),{name,color});document.getElementById('newGroupName').value='';showToast('✅ 群組已新增！');}catch(e){showToast('❌失敗',true);}
+}
+window.addGroup=addGroup;
+async function delGroup(id){if(!confirm('確定刪除？'))return;try{await fbRemove(fbRef(db,'groups/'+id));showToast('🗑 已刪除');}catch(e){showToast('❌失敗',true);}}
+window.delGroup=delGroup;
+async function addLocation(){
+  const gid=document.getElementById('newLocGroup').value, name=document.getElementById('newLocName').value.trim();
+  const raw=document.getElementById('newLocMach').value.trim();
+  if(!gid){showToast('⚠️ 請選擇群組',true);return;} if(!name){showToast('⚠️ 請輸入名稱',true);return;}
+  const machines=raw?raw.split(/[,，]/).map(s=>s.trim()).filter(Boolean):['機台'];
+  const icon=ICONS[Object.keys(locations).length%ICONS.length];
+  try{await fbPush(fbRef(db,'locations'),{name,icon,machines,groupId:gid});document.getElementById('newLocName').value='';document.getElementById('newLocMach').value='';showToast('✅ 地點已新增！');}catch(e){showToast('❌失敗',true);}
+}
+window.addLocation=addLocation;
+async function delLocation(id){if(!confirm('確定刪除？'))return;try{await fbRemove(fbRef(db,'locations/'+id));showToast('🗑 已刪除');}catch(e){showToast('❌失敗',true);}}
+window.delLocation=delLocation;
 
-async function addLocation() {
-  const name = document.getElementById('newLocName').value.trim();
-  const raw = document.getElementById('newLocMach').value.trim();
-  if (!name) { showToast('⚠️ 請輸入地點名稱', true); return; }
-  const machines = raw ? raw.split(/[,，]/).map(s=>s.trim()).filter(Boolean) : ['機台'];
-  const icon = ICONS[Object.keys(locations).length % ICONS.length];
-  try {
-    await fbPush(fbRef(db, 'locations'), { name, icon, machines });
-    document.getElementById('newLocName').value = '';
-    document.getElementById('newLocMach').value = '';
-    showToast('✅ 地點已新增！');
-  } catch(e) { showToast('❌ 新增失敗', true); }
-}
-
-async function delLocation(id) {
-  if (!confirm('確定刪除這個地點？')) return;
-  try {
-    await fbRemove(fbRef(db, 'locations/' + id));
-    showToast('🗑 已刪除');
-  } catch(e) { showToast('❌ 刪除失敗', true); }
-}
-
-function showToast(msg, isErr) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast' + (isErr?' err':'') + ' show';
-  setTimeout(() => t.className = 'toast', 2500);
-}
+function showToast(msg,isErr){const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(isErr?' err':'')+' show';setTimeout(()=>t.className='toast',2500);}
 </script>
 </body>
 </html>
