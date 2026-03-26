@@ -731,7 +731,7 @@ function renderLocMgmt(){
   Object.entries(locations).forEach(([id,loc])=>{
     const rc=Object.values(records).filter(r=>r.locationId===id).length;
     const grp=groups[loc.groupId]; const div=document.createElement('div'); div.className='loc-card';
-    div.innerHTML=`<div class="loc-icon">${loc.icon||'🎮'}</div><div class="loc-info"><div class="loc-name">${loc.name}<span class="gbadge" style="color:${grp?.color||'var(--text3)'}">${grp?.name||'未分組'}</span></div><div class="loc-sub">${(loc.machines||[]).join(' · ')} · ${rc} 筆</div></div><button class="del-btn" onclick="delLocation('${id}')">🗑</button>`;
+    div.innerHTML=`<div class="loc-icon">${loc.icon||'🎮'}</div><div class="loc-info"><div class="loc-name">${loc.name}<span class="gbadge" style="color:${grp?.color||'var(--text3)'}">${grp?.name||'未分組'}</span></div><div class="loc-sub">${(loc.machines||[]).join(' · ')} · ${rc} 筆</div></div><div style="display:flex;gap:6px;flex-shrink:0"><button class="del-btn" title="改名" onclick="editLocName('${id}')" style="color:var(--accent2);font-size:14px">✏️</button><button class="del-btn" title="改機台" onclick="editLocMachines('${id}')" style="color:var(--purple);font-size:14px">🎮</button><button class="del-btn" onclick="delLocation('${id}')">🗑</button></div>`;
     list.appendChild(div);
   });
 }
@@ -816,6 +816,37 @@ async function addLocation(){
 window.addLocation=addLocation;
 async function delLocation(id){if(!confirm('確定刪除？'))return;try{await fbRemove(fbRef(db,'locations/'+id));showToast('🗑 已刪除');}catch(e){showToast('❌失敗',true);}}
 window.delLocation=delLocation;
+
+async function editLocName(id){
+  const loc=locations[id]; if(!loc) return;
+  const newName=prompt('修改地點名稱：',loc.name);
+  if(!newName||newName.trim()===loc.name) return;
+  try{
+    await fbSet(fbRef(db,'locations/'+id+'/name'),newName.trim());
+    // 同步更新所有記錄
+    const recsSnap=await fbGet(fbRef(db,'records'));
+    const recs=recsSnap.val()||{};
+    for(const [rid,r] of Object.entries(recs)){
+      if(r.locationId===id) await fbSet(fbRef(db,'records/'+rid+'/locationName'),newName.trim());
+    }
+    showToast('✅ 名稱已更新！');
+  }catch(e){showToast('❌失敗',true);}
+}
+window.editLocName=editLocName;
+
+async function editLocMachines(id){
+  const loc=locations[id]; if(!loc) return;
+  const current=(loc.machines||[]).join(',');
+  const input=prompt('修改機台名稱（多台用逗號分隔）：',current);
+  if(input===null||input.trim()===current) return;
+  const machines=input.trim().split(/[,，]/).map(s=>s.trim()).filter(Boolean);
+  if(!machines.length){showToast('⚠️ 請輸入至少一台機台',true);return;}
+  try{
+    await fbSet(fbRef(db,'locations/'+id+'/machines'),machines);
+    showToast('✅ 機台已更新！');
+  }catch(e){showToast('❌失敗',true);}
+}
+window.editLocMachines=editLocMachines;
 
 function showToast(msg,isErr){const t=document.getElementById('toast');t.textContent=msg;t.className='toast'+(isErr?' err':'')+' show';setTimeout(()=>t.className='toast',2500);}
 </script>
