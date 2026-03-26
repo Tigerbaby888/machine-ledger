@@ -73,7 +73,11 @@ body {
 .group-tabs::-webkit-scrollbar { display: none; }
 .group-tab { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; padding: 7px 16px; font-size: 13px; color: var(--text2); cursor: pointer; white-space: nowrap; font-family: var(--font); }
 
-.month-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+.chart-card { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 14px; margin-bottom: 14px; box-shadow: var(--neon-blue); }
+.chart-title { font-size: 12px; font-weight: 700; color: var(--accent2); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+.chart-legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text2); }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
 .month-btn { background: var(--surface); border: 1px solid var(--border2); border-radius: 10px; padding: 10px 4px; text-align: center; cursor: pointer; font-size: 13px; color: var(--text2); font-family: var(--font); transition: all 0.15s; }
 .month-btn.active { background: var(--accent2); border-color: var(--accent2); color: #000; font-weight: 700; box-shadow: var(--neon-blue); }
 .month-btn.has-data { border-color: var(--accent2); color: var(--text); }
@@ -232,13 +236,15 @@ select.form-input option { background: #0d2044; }
   </div>
 
   <!-- 總覽 -->
+  <!-- 總覽：年度 -->
   <div class="page active" id="page-overview">
     <div class="year-nav">
       <button class="nav-btn" onclick="changeYear(-1)">‹</button>
       <div class="year-nav-title" id="yearTitle">2026</div>
       <button class="nav-btn" onclick="changeYear(1)">›</button>
     </div>
-    <div class="group-tabs" id="overviewGroupTabs"></div>
+
+    <!-- 年度總結餘 -->
     <div class="year-summary">
       <div><div class="lbl">年度總結餘</div><div class="amt" id="yearTotal" style="color:var(--green)">+0</div></div>
       <div style="text-align:right">
@@ -246,7 +252,27 @@ select.form-input option { background: #0d2044; }
         <div class="lbl" style="margin-top:6px">支出</div><div style="font-family:var(--mono);font-size:14px;color:var(--red)" id="yearExp">0</div>
       </div>
     </div>
+
+    <!-- 年度折線圖 -->
+    <div class="chart-card">
+      <div class="chart-title">📈 各群組月盈餘走勢</div>
+      <canvas id="yearChart" height="180"></canvas>
+      <div class="chart-legend" id="yearLegend"></div>
+    </div>
+
+    <!-- 月份選擇 -->
+    <div class="section-title">點選月份查看詳情</div>
     <div class="month-grid" id="monthGrid"></div>
+  </div>
+
+  <!-- 總覽：月份詳情 -->
+  <div class="page" id="page-month">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <button class="nav-btn" onclick="backToYear()">‹</button>
+      <div class="year-nav-title" id="monthPageTitle">2026年 3月</div>
+    </div>
+
+    <!-- 月份總結餘 -->
     <div class="month-card">
       <div class="lbl" id="monthLabel">本月結餘</div>
       <div class="amt" id="monthTotal">+0</div>
@@ -255,7 +281,15 @@ select.form-input option { background: #0d2044; }
       <div class="mini-card"><div class="l">💰 收入</div><div class="v g" id="monthInc">0</div></div>
       <div class="mini-card"><div class="l">💸 支出</div><div class="v r" id="monthExp">0</div></div>
     </div>
-    <div class="section-title">各地點狀況</div>
+
+    <!-- 月份折線圖（各地點盈餘） -->
+    <div class="chart-card">
+      <div class="chart-title">📊 各地點盈餘排行</div>
+      <canvas id="monthChart" height="200"></canvas>
+    </div>
+
+    <!-- 各地點列表 -->
+    <div class="section-title">各地點明細</div>
     <div class="loc-list" id="overviewLocs"></div>
   </div>
 
@@ -331,6 +365,7 @@ select.form-input option { background: #0d2044; }
 
 <div class="toast" id="toast"></div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, push, onValue, remove, set, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -557,46 +592,94 @@ function renderAll(){
 }
 
 // Overview
+// Overview
+let yearChartObj=null, monthChartObj=null;
+
 function renderOverview(){
   document.getElementById('yearTitle').textContent=currentYear;
   const allowed=getAllowed();
   const allowedGrps=Object.entries(groups).filter(([id])=>allowed.includes(id));
-  const gt=document.getElementById('overviewGroupTabs');
-  gt.innerHTML=`<button class="group-tab" style="${currentOvGroup==='all'?'background:var(--accent);border-color:var(--accent);color:#000;font-weight:700':''}" onclick="setOvGroup('all')">全部</button>`;
-  allowedGrps.forEach(([id,g])=>{
-    const a=currentOvGroup===id;
-    const btn=document.createElement('button'); btn.className='group-tab';
-    btn.textContent=g.name; btn.style.cssText=a?`background:${g.color};border-color:${g.color};color:#000;font-weight:700`:'';
-    btn.onclick=()=>setOvGroup(id); gt.appendChild(btn);
-  });
-  const yr=getFilteredRecs(currentYear,null,currentOvGroup);
+
+  const yr=getFilteredRecs(currentYear,null,'all');
   const{inc:yi,exp:ye,net:yn}=calcNet(yr);
   const yt=document.getElementById('yearTotal'); yt.textContent=fmtS(yn); yt.style.color=yn>=0?'var(--green)':'var(--red)';
   document.getElementById('yearInc').textContent=fmt(yi); document.getElementById('yearExp').textContent=fmt(ye);
+
   const grid=document.getElementById('monthGrid'); grid.innerHTML='';
   for(let m=1;m<=12;m++){
-    const mr=getFilteredRecs(currentYear,m,currentOvGroup); const{net}=calcNet(mr);
+    const mr=getFilteredRecs(currentYear,m,'all'); const{net}=calcNet(mr);
     const btn=document.createElement('button');
-    btn.className='month-btn'+(m===currentMonth?' active':'')+(mr.length>0?' has-data':'');
+    btn.className='month-btn'+(mr.length>0?' has-data':'');
     btn.innerHTML=`<div>${m}月</div><div class="mnet ${net>=0?'pos':'neg'}">${mr.length>0?fmtS(net):''}</div>`;
-    btn.onclick=()=>{currentMonth=m;renderOverview();}; grid.appendChild(btn);
+    btn.onclick=()=>showMonthDetail(m); grid.appendChild(btn);
   }
-  const mr=getFilteredRecs(currentYear,currentMonth,currentOvGroup);
-  const{inc:mi,exp:me,net:mn}=calcNet(mr);
+  renderYearChart(allowedGrps);
+}
+
+function renderYearChart(allowedGrps){
+  const canvas=document.getElementById('yearChart'); if(!canvas) return;
+  if(yearChartObj){yearChartObj.destroy();yearChartObj=null;}
+  const ctx=canvas.getContext('2d');
+  const labels=['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'];
+  const datasets=allowedGrps.map(([id,g])=>{
+    const data=[];
+    for(let m=1;m<=12;m++){const{net}=calcNet(getFilteredRecs(currentYear,m,id));data.push(net);}
+    return{label:g.name,data,borderColor:g.color,backgroundColor:g.color+'22',borderWidth:2.5,pointBackgroundColor:g.color,pointRadius:4,pointHoverRadius:7,tension:0.35,fill:false};
+  });
+  yearChartObj=new Chart(ctx,{type:'line',data:{labels,datasets},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.dataset.label}: ${c.parsed.y>=0?'+':''}${c.parsed.y.toLocaleString()}`}}},scales:{x:{ticks:{color:'#8080a0',font:{size:10}},grid:{color:'#1a3a6a'}},y:{ticks:{color:'#8080a0',font:{size:10},callback:v=>v>=0?'+'+v.toLocaleString():v.toLocaleString()},grid:{color:'#1a3a6a'}}}}});
+  const legend=document.getElementById('yearLegend'); legend.innerHTML='';
+  allowedGrps.forEach(([,g])=>{const i=document.createElement('div');i.className='legend-item';i.innerHTML=`<div class="legend-dot" style="background:${g.color}"></div>${g.name}`;legend.appendChild(i);});
+}
+
+function showMonthDetail(month){
+  currentMonth=month;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-month').classList.add('active');
+  renderMonthDetail();
+}
+
+function backToYear(){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-overview').classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.tab').classList.add('active');
+}
+window.backToYear=backToYear;
+
+function renderMonthDetail(){
+  const allowed=getAllowed();
+  document.getElementById('monthPageTitle').textContent=`${currentYear}年 ${currentMonth}月`;
   document.getElementById('monthLabel').textContent=`${currentYear}年 ${currentMonth}月 結餘`;
+  const mr=getFilteredRecs(currentYear,currentMonth,'all');
+  const{inc:mi,exp:me,net:mn}=calcNet(mr);
   const mt=document.getElementById('monthTotal'); mt.textContent=fmtS(mn); mt.className='amt'+(mn<0?' neg':'');
   document.getElementById('monthInc').textContent=fmt(mi); document.getElementById('monthExp').textContent=fmt(me);
+
   const cont=document.getElementById('overviewLocs'); cont.innerHTML='';
   let locs=Object.entries(locations).filter(([,l])=>allowed.includes(l.groupId));
-  if(currentOvGroup!=='all') locs=locs.filter(([,l])=>l.groupId===currentOvGroup);
-  if(!locs.length){cont.innerHTML='<div class="empty"><div class="empty-icon">📍</div><p>前往「設定」新增地點</p></div>';return;}
-  locs.forEach(([id,loc])=>{
+  locs.sort((a,b)=>calcNet(mr.filter(r=>r.locationId===b[0])).net - calcNet(mr.filter(r=>r.locationId===a[0])).net);
+  if(!locs.length){cont.innerHTML='<div class="empty"><div class="empty-icon">📍</div><p>尚無資料</p></div>';}
+  else{locs.forEach(([id,loc])=>{
     const lr=mr.filter(r=>r.locationId===id); const{net:ln}=calcNet(lr);
     const grp=groups[loc.groupId]; const div=document.createElement('div'); div.className='loc-card';
-    div.innerHTML=`<div class="loc-icon">${loc.icon||'🎮'}</div><div class="loc-info"><div class="loc-name">${loc.name}<span class="gbadge" style="color:${grp?.color||'var(--text3)'}">${grp?.name||''}</span></div><div class="loc-sub">${lr.length} 筆 · ${(loc.machines||[]).length} 台</div></div><div class="loc-amt ${ln>=0?'p':'n'}">${fmtS(ln)}</div>`;
+    div.innerHTML=`<div class="loc-icon">${loc.icon||'🎮'}</div><div class="loc-info"><div class="loc-name">${loc.name}<span class="gbadge" style="color:${grp?.color||'var(--text3)'}">${grp?.name||''}</span></div><div class="loc-sub">${lr.length} 筆</div></div><div class="loc-amt ${ln>=0?'p':'n'}">${fmtS(ln)}</div>`;
     cont.appendChild(div);
-  });
+  });}
+  renderMonthChart(locs,mr);
 }
+
+function renderMonthChart(locs,mr){
+  const canvas=document.getElementById('monthChart'); if(!canvas) return;
+  if(monthChartObj){monthChartObj.destroy();monthChartObj=null;}
+  const ctx=canvas.getContext('2d');
+  const locData=locs.map(([id,loc])=>{
+    const{net}=calcNet(mr.filter(r=>r.locationId===id));
+    return{name:loc.name,net,color:groups[loc.groupId]?.color||'#5ab4ff'};
+  }).filter(d=>d.net!==0).sort((a,b)=>b.net-a.net);
+  if(!locData.length) return;
+  monthChartObj=new Chart(ctx,{type:'bar',data:{labels:locData.map(d=>d.name),datasets:[{data:locData.map(d=>d.net),backgroundColor:locData.map(d=>d.net>=0?d.color+'99':'#ff445566'),borderColor:locData.map(d=>d.net>=0?d.color:'#ff4455'),borderWidth:1.5,borderRadius:6}]},options:{responsive:true,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.parsed.y>=0?'+':''}${c.parsed.y.toLocaleString()}`}}},scales:{x:{ticks:{color:'#8080a0',font:{size:10}},grid:{color:'#1a3a6a'}},y:{ticks:{color:'#8080a0',font:{size:10},callback:v=>v>=0?'+'+v.toLocaleString():v.toLocaleString()},grid:{color:'#1a3a6a'}}}}});
+}
+
 function setOvGroup(id){currentOvGroup=id;renderOverview();} window.setOvGroup=setOvGroup;
 function changeYear(d){currentYear+=d;renderOverview();} window.changeYear=changeYear;
 
@@ -684,7 +767,10 @@ window.onLocChange=onLocChange;
 function switchTab(tab,btn){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+tab).classList.add('active'); btn.classList.add('active');
+  // overview tab shows page-overview (not page-month)
+  const pageId = tab==='overview' ? 'page-overview' : 'page-'+tab;
+  document.getElementById(pageId).classList.add('active');
+  btn.classList.add('active');
   document.getElementById('userMenu').classList.remove('show');
 }
 window.switchTab=switchTab;
