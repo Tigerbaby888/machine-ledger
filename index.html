@@ -127,10 +127,41 @@ select.form-input option { background: #0d2044; }
 .qn { background: var(--surface2); border: 1px solid var(--border2); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--accent2); cursor: pointer; font-family: var(--font); }
 .qn:active { background: var(--border2); color: #fff; }
 
-.filter-bar { display: flex; gap: 6px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; }
-.filter-bar::-webkit-scrollbar { display: none; }
-.chip { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border2); border-radius: 20px; padding: 6px 12px; font-size: 12px; color: var(--text2); cursor: pointer; white-space: nowrap; font-family: var(--font); }
-.chip.active { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 700; box-shadow: var(--neon-pink); }
+.rec-filters { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 10px; }
+.rec-filter-row { display: flex; align-items: flex-start; gap: 10px; }
+.rec-filter-label { font-size: 11px; font-weight: 700; color: var(--accent2); min-width: 30px; padding-top: 7px; letter-spacing: 0.06em; }
+.rec-chips { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; }
+.rec-chip { background: var(--surface2); border: 1px solid var(--border2); border-radius: 20px; padding: 5px 12px; font-size: 12px; color: var(--text2); cursor: pointer; font-family: var(--font); white-space: nowrap; transition: all 0.1s; }
+.rec-chip.active { color: #000; font-weight: 700; border-color: transparent; }
+
+.rec-table-title { font-size: 15px; font-weight: 900; color: var(--text); margin-bottom: 10px; padding-left: 2px; }
+
+.rec-summary-row { display: flex; gap: 8px; margin-bottom: 12px; }
+.rs-item { flex: 1; background: var(--surface2); border: 1px solid var(--border2); border-radius: 10px; padding: 10px 12px; text-align: center; }
+.rs-label { font-size: 10px; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.06em; }
+.rs-val { font-family: var(--mono); font-size: 16px; font-weight: 500; }
+.rs-val.g { color: var(--green); }
+.rs-val.r { color: var(--red); }
+
+.rec-table-wrap { overflow-x: auto; }
+.rec-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rec-table th { background: var(--surface2); color: var(--accent2); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; padding: 8px 10px; text-align: center; border-bottom: 1px solid var(--border2); white-space: nowrap; }
+.rec-table th:first-child { text-align: left; }
+.rec-table td { padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: right; color: var(--text); vertical-align: middle; }
+.rec-table td:first-child { text-align: left; color: var(--text2); font-size: 12px; }
+.rec-table td:nth-child(4) { text-align: left; color: var(--text2); font-size: 11px; max-width: 100px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rec-table tr:first-child td { background: #1a3a1a22; }
+.rec-table tr:hover td { background: var(--surface2); }
+.rec-table .inc { color: var(--green); }
+.rec-table .exp { color: var(--red); }
+.rec-table .net-pos { color: var(--green); font-family: var(--mono); font-size: 12px; }
+.rec-table .net-neg { color: var(--red); font-family: var(--mono); font-size: 12px; }
+.rec-table .first-row td { background: #f5c84211; }
+.rec-table .del-cell { width: 28px; padding: 4px; }
+.rec-table .del-cell button { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 13px; padding: 2px; }
+.empty-table { text-align: center; padding: 40px 20px; color: var(--text3); }
+.empty-table .empty-icon { font-size: 36px; margin-bottom: 8px; }
+.empty-table p { font-size: 13px; }
 .rec-list { display: flex; flex-direction: column; gap: 7px; }
 .rec-item { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; animation: fadeIn 0.2s ease; }
 @keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
@@ -320,8 +351,38 @@ select.form-input option { background: #0d2044; }
 
   <!-- 明細 -->
   <div class="page" id="page-records">
-    <div class="filter-bar" id="filterBar"></div>
-    <div class="rec-list" id="recList"></div>
+    <!-- 四層篩選 -->
+    <div class="rec-filters">
+      <div class="rec-filter-row">
+        <div class="rec-filter-label">群組</div>
+        <div class="rec-chips" id="recGroupChips"></div>
+      </div>
+      <div class="rec-filter-row" id="recLocRow" style="display:none">
+        <div class="rec-filter-label">地點</div>
+        <div class="rec-chips" id="recLocChips"></div>
+      </div>
+      <div class="rec-filter-row" id="recMachRow" style="display:none">
+        <div class="rec-filter-label">機台</div>
+        <div class="rec-chips" id="recMachChips"></div>
+      </div>
+      <div class="rec-filter-row" id="recMonthRow" style="display:none">
+        <div class="rec-filter-label">月份</div>
+        <div class="rec-chips" id="recMonthChips"></div>
+      </div>
+    </div>
+
+    <!-- 標題列 -->
+    <div class="rec-table-title" id="recTableTitle"></div>
+
+    <!-- 統計列 -->
+    <div class="rec-summary-row" id="recSummary" style="display:none">
+      <div class="rs-item"><div class="rs-label">收入</div><div class="rs-val g" id="rsTotalInc">0</div></div>
+      <div class="rs-item"><div class="rs-label">支出</div><div class="rs-val r" id="rsTotalExp">0</div></div>
+      <div class="rs-item"><div class="rs-label">結餘</div><div class="rs-val" id="rsTotalNet">0</div></div>
+    </div>
+
+    <!-- 表格 -->
+    <div id="recTableWrap"></div>
   </div>
 
   <!-- 設定 -->
@@ -703,36 +764,156 @@ function setOvGroup(id){currentOvGroup=id;renderOverview();} window.setOvGroup=s
 function changeYear(d){currentYear+=d;renderOverview();} window.changeYear=changeYear;
 
 // Records
+// Records state
+let recSelGroup=null, recSelLoc=null, recSelMach=null, recSelMonth=null;
+
 function renderRecords(){
   const allowed=getAllowed();
-  const bar=document.getElementById('filterBar');
-  bar.innerHTML=`<button class="chip${currentFilter==='all'?' active':''}" onclick="setFilter('all',this)">全部</button>`;
-  Object.entries(groups).filter(([id])=>allowed.includes(id)).forEach(([id,g])=>{
-    const btn=document.createElement('button'); btn.className='chip'+(currentFilter===id?' active':'');
-    btn.textContent=g.name; btn.style.cssText=currentFilter===id?`background:${g.color};border-color:${g.color};color:#000`:'';
-    btn.onclick=()=>setFilter(id,btn); bar.appendChild(btn);
+  const allowedGrps=Object.entries(groups).filter(([id])=>allowed.includes(id));
+  const grpColor=recSelGroup?groups[recSelGroup]?.color||'#5ab4ff':'#5ab4ff';
+
+  // 群組 chips
+  const gc=document.getElementById('recGroupChips'); gc.innerHTML='';
+  allowedGrps.forEach(([id,g])=>{
+    const btn=document.createElement('button');
+    btn.className='rec-chip'+(recSelGroup===id?' active':'');
+    btn.textContent=g.name;
+    if(recSelGroup===id) btn.style.cssText=`background:${g.color};color:#000;border-color:${g.color}`;
+    btn.onclick=()=>{recSelGroup=recSelGroup===id?null:id;recSelLoc=null;recSelMach=null;recSelMonth=null;renderRecords();};
+    gc.appendChild(btn);
   });
-  const list=document.getElementById('recList');
+
+  // 地點 chips
+  const locRow=document.getElementById('recLocRow');
+  const lc=document.getElementById('recLocChips'); lc.innerHTML='';
+  if(recSelGroup){
+    locRow.style.display='flex';
+    Object.entries(locations).filter(([,l])=>l.groupId===recSelGroup).forEach(([id,loc])=>{
+      const btn=document.createElement('button');
+      btn.className='rec-chip'+(recSelLoc===id?' active':'');
+      btn.textContent=(loc.icon||'🎮')+' '+loc.name;
+      if(recSelLoc===id) btn.style.cssText=`background:${grpColor};color:#000;border-color:${grpColor}`;
+      btn.onclick=()=>{recSelLoc=recSelLoc===id?null:id;recSelMach=null;recSelMonth=null;renderRecords();};
+      lc.appendChild(btn);
+    });
+  } else locRow.style.display='none';
+
+  // 機台 chips
+  const machRow=document.getElementById('recMachRow');
+  const mc=document.getElementById('recMachChips'); mc.innerHTML='';
+  if(recSelLoc){
+    const loc=locations[recSelLoc];
+    const machines=loc?.machines||[];
+    machRow.style.display='flex';
+    machines.forEach(m=>{
+      const btn=document.createElement('button');
+      btn.className='rec-chip'+(recSelMach===m?' active':'');
+      btn.textContent=m;
+      if(recSelMach===m) btn.style.cssText=`background:${grpColor};color:#000;border-color:${grpColor}`;
+      btn.onclick=()=>{recSelMach=recSelMach===m?null:m;recSelMonth=null;renderRecords();};
+      mc.appendChild(btn);
+    });
+  } else machRow.style.display='none';
+
+  // 月份 chips — 只在選了機台（或單台地點）後才顯示
+  const monthRow=document.getElementById('recMonthRow');
+  const mthc=document.getElementById('recMonthChips'); mthc.innerHTML='';
+  const showMonth=recSelLoc&&(recSelMach||(locations[recSelLoc]?.machines||[]).length===1);
+  if(showMonth){
+    monthRow.style.display='flex';
+    // 找出有資料的月份
+    const allRecs=Object.values(records).filter(r=>{
+      if(r.locationId!==recSelLoc) return false;
+      const mach=recSelMach||(locations[recSelLoc]?.machines||[])[0];
+      if(mach&&r.machine!==mach) return false;
+      return true;
+    });
+    const months=new Set(allRecs.map(r=>(r.date||'').slice(0,7)).filter(Boolean));
+    // 全部月份按鈕
+    const allBtn=document.createElement('button');
+    allBtn.className='rec-chip'+(recSelMonth===null?' active':'');
+    allBtn.textContent='全部';
+    if(recSelMonth===null) allBtn.style.cssText=`background:${grpColor};color:#000;border-color:${grpColor}`;
+    allBtn.onclick=()=>{recSelMonth=null;renderRecords();};
+    mthc.appendChild(allBtn);
+    // 有資料的年月
+    [...months].sort().forEach(ym=>{
+      const [y,m]=ym.split('-');
+      const btn=document.createElement('button');
+      btn.className='rec-chip'+(recSelMonth===ym?' active':'');
+      btn.textContent=`${y}年${parseInt(m)}月`;
+      if(recSelMonth===ym) btn.style.cssText=`background:${grpColor};color:#000;border-color:${grpColor}`;
+      btn.onclick=()=>{recSelMonth=recSelMonth===ym?null:ym;renderRecords();};
+      mthc.appendChild(btn);
+    });
+  } else monthRow.style.display='none';
+
+  // 篩選記錄
   const alLocs=Object.entries(locations).filter(([,l])=>allowed.includes(l.groupId)).map(([id])=>id);
   let recs=Object.entries(records).map(([id,r])=>({...r,_id:id})).filter(r=>alLocs.includes(r.locationId));
-  recs.sort((a,b)=>(b.ts||0)-(a.ts||0));
-  if(currentFilter!=='all'){const lids=Object.entries(locations).filter(([,l])=>l.groupId===currentFilter).map(([id])=>id);recs=recs.filter(r=>lids.includes(r.locationId));}
-  if(!recs.length){list.innerHTML='<div class="empty"><div class="empty-icon">📋</div><p>還沒有記帳記錄</p></div>';return;}
-  list.innerHTML='';
+  if(recSelGroup){ const lids=Object.entries(locations).filter(([,l])=>l.groupId===recSelGroup).map(([id])=>id); recs=recs.filter(r=>lids.includes(r.locationId)); }
+  if(recSelLoc) recs=recs.filter(r=>r.locationId===recSelLoc);
+  if(recSelMach) recs=recs.filter(r=>r.machine===recSelMach);
+  else if(recSelLoc&&(locations[recSelLoc]?.machines||[]).length===1) recs=recs.filter(r=>r.machine===(locations[recSelLoc].machines[0]));
+  if(recSelMonth) recs=recs.filter(r=>(r.date||'').startsWith(recSelMonth));
+  recs.sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.ts||0)-(b.ts||0));
+
+  // 標題
+  const titleEl=document.getElementById('recTableTitle');
+  const loc=recSelLoc?locations[recSelLoc]:null;
+  const grp=recSelGroup?groups[recSelGroup]:null;
+  const machLabel=recSelMach||(loc&&loc.machines?.length===1?loc.machines[0]:'');
+  const monthLabel=recSelMonth?recSelMonth.replace('-','年').replace(/0?(\d+)$/,'$1月'):'';
+  let title='';
+  if(loc) title=(loc.icon||'🎮')+' '+loc.name+(machLabel?' · '+machLabel:'')+(monthLabel?' · '+monthLabel:'');
+  else if(grp) title=grp.name;
+  else title='請選擇群組';
+  titleEl.textContent=title;
+
+  // 統計
+  const sumRow=document.getElementById('recSummary');
+  if(recs.length>0&&recSelLoc){
+    sumRow.style.display='flex';
+    const{inc,exp,net}=calcNet(recs);
+    document.getElementById('rsTotalInc').textContent='+'+fmt(inc);
+    document.getElementById('rsTotalExp').textContent='-'+fmt(exp);
+    const netEl=document.getElementById('rsTotalNet');
+    netEl.textContent=fmtS(net);
+    netEl.className='rs-val'+(net>=0?' g':' r');
+  } else sumRow.style.display='none';
+
+  // 表格
+  const wrap=document.getElementById('recTableWrap');
+  if(!recSelLoc){ wrap.innerHTML='<div class="empty-table"><div class="empty-icon">👆</div><p>請先選擇群組和地點</p></div>'; return; }
+  if(!recs.length){ wrap.innerHTML='<div class="empty-table"><div class="empty-icon">📋</div><p>此條件沒有記錄</p></div>'; return; }
+
   const canDel=currentUserData?.role==='admin';
-  recs.forEach(r=>{
-    const div=document.createElement('div'); div.className='rec-item';
-    div.innerHTML=`<div class="rec-dot ${r.type}"></div><div class="rec-body"><div class="rec-top"><span class="rec-loc">${r.locationName||''} · ${r.machine||''}</span><span class="rec-amt ${r.type}">${r.type==='income'?'+':'-'}${fmt(r.amount)}</span></div><div class="rec-meta"><span class="rec-date">${r.date||''}</span>${r.groupName?`<span style="color:var(--purple)">${r.groupName}</span>`:''} ${r.note?`<span>${r.note}</span>`:''}</div></div>${canDel?`<button class="rec-del" onclick="delRecord('${r._id}')">🗑</button>`:''}`;
-    list.appendChild(div);
+  let running=0;
+  const rows=recs.map((r,i)=>{
+    const inc=r.type==='income'?r.amount:0;
+    const exp=r.type==='expense'?r.amount:0;
+    running+=inc-exp;
+    return{...r,inc,exp,running};
   });
+
+  wrap.innerHTML=`<div class="rec-table-wrap"><table class="rec-table">
+    <thead><tr>
+      <th>日期</th><th>收入</th><th>支出</th><th>備註</th><th>餘額</th>
+      ${canDel?'<th></th>':''}
+    </tr></thead>
+    <tbody>
+    ${rows.map((r,i)=>`<tr class="${i===0?'first-row':''}">
+      <td>${(r.date||'').slice(5).replace('-','/')}</td>
+      <td class="inc">${r.inc>0?'+'+fmt(r.inc):''}</td>
+      <td class="exp">${r.exp>0?'-'+fmt(r.exp):''}</td>
+      <td>${r.note||''}</td>
+      <td class="${r.running>=0?'net-pos':'net-neg'}">${fmtS(r.running)}</td>
+      ${canDel?`<td class="del-cell"><button onclick="delRecord('${r._id}')">🗑</button></td>`:''}
+    </tr>`).join('')}
+    </tbody>
+  </table></div>`;
 }
-function setFilter(f,btn){
-  currentFilter=f;
-  document.querySelectorAll('.chip').forEach(c=>{c.classList.remove('active');c.style.cssText='';});
-  if(btn){btn.classList.add('active');if(f!=='all'){const g=groups[f];if(g)btn.style.cssText=`background:${g.color};border-color:${g.color};color:#000`;}}
-  renderRecords();
-}
-window.setFilter=setFilter;
+window.setFilter=()=>{};
 
 // Settings
 function renderGroupMgmt(){
