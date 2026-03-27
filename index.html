@@ -818,14 +818,13 @@ function renderRecords(){
   // 月份 chips — 只在選了機台（或單台地點）後才顯示
   const monthRow=document.getElementById('recMonthRow');
   const mthc=document.getElementById('recMonthChips'); mthc.innerHTML='';
-  const showMonth=recSelLoc&&(recSelMach||(locations[recSelLoc]?.machines||[]).length===1);
+  const showMonth=recSelLoc;
   if(showMonth){
     monthRow.style.display='flex';
     // 找出有資料的月份
     const allRecs=Object.values(records).filter(r=>{
       if(r.locationId!==recSelLoc) return false;
-      const mach=recSelMach||(locations[recSelLoc]?.machines||[])[0];
-      if(mach&&r.machine!==mach) return false;
+      if(recSelMach&&r.machine!==recSelMach) return false;
       return true;
     });
     const months=new Set(allRecs.map(r=>(r.date||'').slice(0,7)).filter(Boolean));
@@ -854,7 +853,6 @@ function renderRecords(){
   if(recSelGroup){ const lids=Object.entries(locations).filter(([,l])=>l.groupId===recSelGroup).map(([id])=>id); recs=recs.filter(r=>lids.includes(r.locationId)); }
   if(recSelLoc) recs=recs.filter(r=>r.locationId===recSelLoc);
   if(recSelMach) recs=recs.filter(r=>r.machine===recSelMach);
-  else if(recSelLoc&&(locations[recSelLoc]?.machines||[]).length===1) recs=recs.filter(r=>r.machine===(locations[recSelLoc].machines[0]));
   if(recSelMonth) recs=recs.filter(r=>(r.date||'').startsWith(recSelMonth));
   recs.sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.ts||0)-(b.ts||0));
 
@@ -862,7 +860,7 @@ function renderRecords(){
   const titleEl=document.getElementById('recTableTitle');
   const loc=recSelLoc?locations[recSelLoc]:null;
   const grp=recSelGroup?groups[recSelGroup]:null;
-  const machLabel=recSelMach||(loc&&loc.machines?.length===1?loc.machines[0]:'');
+  const machLabel=recSelMach||'';
   const monthLabel=recSelMonth?recSelMonth.replace('-','年').replace(/0?(\d+)$/,'$1月'):'';
   let title='';
   if(loc) title=(loc.icon||'🎮')+' '+loc.name+(machLabel?' · '+machLabel:'')+(monthLabel?' · '+monthLabel:'');
@@ -885,6 +883,7 @@ function renderRecords(){
   // 表格
   const wrap=document.getElementById('recTableWrap');
   if(!recSelLoc){ wrap.innerHTML='<div class="empty-table"><div class="empty-icon">👆</div><p>請先選擇群組和地點</p></div>'; return; }
+  if(!recSelMach&&(locations[recSelLoc]?.machines||[]).length>1){ wrap.innerHTML='<div class="empty-table"><div class="empty-icon">🎮</div><p>請選擇機台</p></div>'; return; }
   if(!recs.length){ wrap.innerHTML='<div class="empty-table"><div class="empty-icon">📋</div><p>此條件沒有記錄</p></div>'; return; }
 
   const canDel=currentUserData?.role==='admin';
