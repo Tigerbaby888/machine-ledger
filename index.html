@@ -221,6 +221,7 @@ select.form-input option { background: #0d2044; }
     <div style="margin-top:6px"><span class="dot" id="d2"></span>驗證身分…</div>
     <div style="margin-top:6px"><span class="dot" id="d3"></span>載入資料…</div>
   </div>
+  <div id="splashDebug" style="margin-top:16px;font-size:11px;color:var(--text3);max-width:300px;text-align:center;line-height:1.6;"></div>
 </div>
 
 <div id="loginScreen">
@@ -509,8 +510,18 @@ window.addEventListener('fbReady', () => {
   _signIn=fb.signInWithPopup; _signInRedirect=fb.signInWithRedirect; _getRedirectResult=fb.getRedirectResult; _signOut=fb.signOut; _onAuth=fb.onAuthStateChanged;
   document.getElementById('d1').className='dot ok';
   document.getElementById('d2').className='dot spin';
+  document.getElementById('splashDebug').textContent='Firebase OK，等待身分驗證…';
+
+  // 10秒後如果還沒登入，強制顯示登入頁
+  const authTimeout = setTimeout(() => {
+    if(document.getElementById('splashScreen').style.display !== 'none') {
+      document.getElementById('splashScreen').style.display='none';
+      document.getElementById('loginScreen').style.display='flex';
+    }
+  }, 8000);
 
   _onAuth(auth, async (user) => {
+    clearTimeout(authTimeout);
     if (user) {
       currentUser=user;
       document.getElementById('d2').className='dot ok';
