@@ -509,15 +509,6 @@ window.addEventListener('fbReady', () => {
   _signIn=fb.signInWithPopup; _signInRedirect=fb.signInWithRedirect; _getRedirectResult=fb.getRedirectResult; _signOut=fb.signOut; _onAuth=fb.onAuthStateChanged;
   document.getElementById('d1').className='dot ok';
   document.getElementById('d2').className='dot spin';
-  // 處理手機跳轉登入結果
-  try {
-    const result = await _getRedirectResult(auth);
-    if(result?.user) {
-      console.log('Redirect login success:', result.user.email);
-    }
-  } catch(e) {
-    console.log('Redirect error (ignored):', e.code);
-  }
 
   _onAuth(auth, async (user) => {
     if (user) {
@@ -642,19 +633,16 @@ function setupUI() {
 // Auth
 async function signInGoogle() {
   try {
-    // 偵測 iOS Safari
-    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-    if(isIOS || isSafari) {
-      // Safari 用跳轉式登入
-      await _signInRedirect(auth, provider);
-      // 跳轉後頁面會重新載入，不需要後續處理
-    } else {
-      // Chrome/Android 用彈出視窗
-      await _signIn(auth, provider);
-    }
+    await _signIn(auth, provider);
   } catch(e) {
-    if(e.code !== 'auth/cancelled-popup-request' && e.code !== 'auth/popup-closed-by-user') {
+    // popup 失敗時改用跳轉式
+    if(e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment') {
+      try {
+        await _signInRedirect(auth, provider);
+      } catch(e2) {
+        showToast('❌ 登入失敗，請用 Chrome 開啟', true);
+      }
+    } else if(e.code !== 'auth/cancelled-popup-request' && e.code !== 'auth/popup-closed-by-user') {
       showToast('❌ 登入失敗：' + (e.code||e.message), true);
     }
   }
