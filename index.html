@@ -469,7 +469,7 @@ select.form-input option { background: #0d2044; }
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, push, onValue, remove, set, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyDHq1GFRYaMRw_X5yBzIOzxDA4QDEHeVr0",
@@ -483,7 +483,7 @@ const app = initializeApp({
 const db = getDatabase(app);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
-window._fb = { db, ref, push, onValue, remove, set, get, auth, provider, signInWithPopup, signOut, onAuthStateChanged };
+window._fb = { db, ref, push, onValue, remove, set, get, auth, provider, signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged };
 window.dispatchEvent(new Event('fbReady'));
 </script>
 
@@ -497,7 +497,7 @@ let currentUser=null, currentUserData=null;
 let currentType='income', currentFilter='all';
 let currentYear=new Date().getFullYear(), currentMonth=new Date().getMonth()+1;
 let currentOvGroup='all';
-let db,fbRef,fbPush,fbOnValue,fbRemove,fbSet,fbGet,auth,provider,_signIn,_signOut,_onAuth;
+let db,fbRef,fbPush,fbOnValue,fbRemove,fbSet,fbGet,auth,provider,_signIn,_signInRedirect,_getRedirectResult,_signOut,_onAuth;
 let _shown=false;
 
 window.addEventListener('fbReady', () => {
@@ -505,9 +505,15 @@ window.addEventListener('fbReady', () => {
   db=fb.db; fbRef=fb.ref; fbPush=fb.push; fbOnValue=fb.onValue;
   fbRemove=fb.remove; fbSet=fb.set; fbGet=fb.get;
   auth=fb.auth; provider=fb.provider;
-  _signIn=fb.signInWithPopup; _signOut=fb.signOut; _onAuth=fb.onAuthStateChanged;
+  _signIn=fb.signInWithPopup; _signInRedirect=fb.signInWithRedirect; _getRedirectResult=fb.getRedirectResult; _signOut=fb.signOut; _onAuth=fb.onAuthStateChanged;
   document.getElementById('d1').className='dot ok';
   document.getElementById('d2').className='dot spin';
+  // 處理手機跳轉登入結果
+  try {
+    const result = await _getRedirectResult(auth);
+    if(result?.user) console.log('Redirect login success:', result.user.email);
+  } catch(e) { console.log('No redirect result'); }
+
   _onAuth(auth, async (user) => {
     if (user) {
       currentUser=user;
@@ -618,7 +624,18 @@ function setupUI() {
 }
 
 // Auth
-async function signInGoogle() { try { await _signIn(auth,provider); } catch(e) { showToast('❌ 登入失敗',true); } }
+async function signInGoogle() {
+  try {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if(isMobile) {
+      await _signInRedirect(auth, provider);
+    } else {
+      await _signIn(auth, provider);
+    }
+  } catch(e) {
+    showToast('❌ 登入失敗：' + e.message, true);
+  }
+}
 window.signInGoogle=signInGoogle;
 async function doLogout() { await _signOut(auth); document.getElementById('userMenu').classList.remove('show'); }
 window.doLogout=doLogout;
