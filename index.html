@@ -311,6 +311,7 @@ select.form-input option { background: #0d2044; }
     <div class="mini-row">
       <div class="mini-card"><div class="l">💰 收入</div><div class="v g" id="monthInc">0</div></div>
       <div class="mini-card"><div class="l">💸 支出</div><div class="v r" id="monthExp">0</div></div>
+      <div class="mini-card"><div class="l">📊 淨利率</div><div class="v" id="monthMargin" style="color:var(--accent2)">0%</div></div>
     </div>
 
     <!-- 月份折線圖（各地點盈餘） -->
@@ -771,6 +772,9 @@ function renderMonthDetail(){
   const{inc:mi,exp:me,net:mn}=calcNet(mr);
   const mt=document.getElementById('monthTotal'); mt.textContent=fmtS(mn); mt.className='amt'+(mn<0?' neg':'');
   document.getElementById('monthInc').textContent=fmt(mi); document.getElementById('monthExp').textContent=fmt(me);
+  const marginEl=document.getElementById('monthMargin');
+  if(mi>0){ const pct=Math.round((mn/mi)*100); marginEl.textContent=pct+'%'; marginEl.style.color=pct>=0?'var(--green)':'var(--red)'; }
+  else { marginEl.textContent='—'; marginEl.style.color='var(--text3)'; }
 
   const cont=document.getElementById('overviewLocs'); cont.innerHTML='';
   let locs=Object.entries(locations).filter(([,l])=>allowed.includes(l.groupId));
