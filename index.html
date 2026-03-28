@@ -512,8 +512,12 @@ window.addEventListener('fbReady', () => {
   // 處理手機跳轉登入結果
   try {
     const result = await _getRedirectResult(auth);
-    if(result?.user) console.log('Redirect login success:', result.user.email);
-  } catch(e) { console.log('No redirect result'); }
+    if(result?.user) {
+      console.log('Redirect login success:', result.user.email);
+    }
+  } catch(e) {
+    console.log('Redirect error (ignored):', e.code);
+  }
 
   _onAuth(auth, async (user) => {
     if (user) {
@@ -571,8 +575,19 @@ function tryShow() {
     document.getElementById('syncDot').className='sync-dot live';
     document.getElementById('syncLabel').textContent='即時同步';
     setupUI();
+    renderAll();
   }, 300);
 }
+
+// 防止永久卡在載入畫面 — 12秒後強制跳到登入頁
+setTimeout(() => {
+  const splash = document.getElementById('splashScreen');
+  const login = document.getElementById('loginScreen');
+  if (splash && splash.style.display !== 'none' && login && login.style.display === 'none') {
+    splash.style.display = 'none';
+    login.style.display = 'flex';
+  }
+}, 12000);
 
 async function seedDefaults() {
   const g1=await fbPush(fbRef(db,'groups'),{name:'虎寶的',color:GCOLORS[0]});
@@ -627,14 +642,21 @@ function setupUI() {
 // Auth
 async function signInGoogle() {
   try {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    if(isMobile) {
+    // 偵測 iOS Safari
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    if(isIOS || isSafari) {
+      // Safari 用跳轉式登入
       await _signInRedirect(auth, provider);
+      // 跳轉後頁面會重新載入，不需要後續處理
     } else {
+      // Chrome/Android 用彈出視窗
       await _signIn(auth, provider);
     }
   } catch(e) {
-    showToast('❌ 登入失敗：' + e.message, true);
+    if(e.code !== 'auth/cancelled-popup-request' && e.code !== 'auth/popup-closed-by-user') {
+      showToast('❌ 登入失敗：' + (e.code||e.message), true);
+    }
   }
 }
 window.signInGoogle=signInGoogle;
